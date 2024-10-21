@@ -7,15 +7,67 @@
 
 import SwiftUI
 import FSCalendar
+import EventKit
+
+@MainActor
+class CalendarViewModel: ObservableObject {
+    @Published var events: [Date: [String]] = [:]
+    private let eventStore = EKEventStore()
+
+    init() {
+        Task {
+            await requestAccessToCalendar()
+            await loadEvents()
+        }
+    }
+
+    func requestAccessToCalendar() async {
+        do {
+            let granted = try await eventStore.requestAccess(to: .event)
+            if !granted {
+                print("Access to calendar not granted")
+            }
+        } catch {
+            print("Failed to request access: \(error)")
+        }
+    }
+
+    func loadEvents() async {
+        let calendars = eventStore.calendars(for: .event)
+        let oneMonthAgo = Date().addingTimeInterval(-30*24*3600)
+        let oneMonthAfter = Date().addingTimeInterval(30*24*3600)
+        let predicate = eventStore.predicateForEvents(withStart: oneMonthAgo, end: oneMonthAfter, calendars: calendars)
+
+        let ekEvents = eventStore.events(matching: predicate)
+        var newEvents: [Date: [String]] = [:]
+
+        for event in ekEvents {
+            let startDate = Calendar.current.startOfDay(for: event.startDate)
+            if newEvents[startDate] != nil {
+                newEvents[startDate]?.append(event.title)
+            } else {
+                newEvents[startDate] = [event.title]
+            }
+        }
+
+        self.events = newEvents
+    }
+}
+
+
 
 struct ContentView: View {
+    @StateObject private var viewModel = CalendarViewModel()
+
     var body: some View {
-        CalendarView()
+        CalendarView(events: viewModel.events)
             .edgesIgnoringSafeArea(.all)
     }
 }
 
 struct CalendarView: UIViewRepresentable {
+    var events: [Date: [String]]
+    
     func makeUIView(context: Context) -> FSCalendar {
         let calendar = FSCalendar()
         calendar.delegate = context.coordinator
@@ -25,7 +77,8 @@ struct CalendarView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: FSCalendar, context: Context) {
-        // 必要に応じてカレンダーの更新を行う
+        context.coordinator.events = events
+        uiView.reloadData()
     }
 
     func makeCoordinator() -> Coordinator {
@@ -33,12 +86,7 @@ struct CalendarView: UIViewRepresentable {
     }
 class Coordinator: NSObject, FSCalendarDelegate, FSCalendarDataSource {
         var parent: CalendarView
-        private var events: [Date: [String]] = [
-            // サンプルデータ
-            Date(): ["会議があるよ"],
-    Calendar.current.date(byAdding: .day, value: 1, to: Date())!: ["長い予定のタイトルがここに表示されます"],
-    Calendar.current.date(from: DateComponents(year: 2024, month: 10, day: 16))!: ["特別なイベント", "イベント", "特別なント", "特別なイト"]
-]
+    var events: [Date: [String]] = [:]
     
         init(_ parent: CalendarView) {
             self.parent = parent
