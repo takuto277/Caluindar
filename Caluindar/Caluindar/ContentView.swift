@@ -10,9 +10,39 @@ import FSCalendar
 import EventKit
 import Combine
 
+class EventManager {
+    private let store = EKEventStore()
+
+    func requestAccess(completion: @escaping (Bool) -> Void) {
+        store.requestAccess(to: .event) { granted, error in
+            if let error = error {
+                print("Failed to request access: \(error.localizedDescription)")
+            }
+            completion(granted)
+        }
+    }
+
+    func createEvent(title: String, startDate: Date, endDate: Date, completion: @escaping (Bool) -> Void) {
+        let event = EKEvent(eventStore: store)
+        event.title = title
+        event.startDate = startDate
+        event.endDate = endDate
+        event.calendar = store.defaultCalendarForNewEvents
+
+        do {
+            try store.save(event, span: .thisEvent, commit: true)
+            completion(true)
+        } catch {
+            print("Failed to save event: \(error.localizedDescription)")
+            completion(false)
+        }
+    }
+}
+
 class CalendarViewModel: ObservableObject {
     @Published var events: [Date: [String]] = [:]
     private let eventStore = EKEventStore()
+    private let eventManager = EventManager()
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -25,7 +55,10 @@ class CalendarViewModel: ObservableObject {
                 }
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: &$events)
+            .sink { [weak self] newEvents in
+                self?.events = newEvents
+            }
+            .store(in: &cancellables)
     }
 
     private func requestAccessToCalendar() -> Future<Bool, Never> {
@@ -35,7 +68,20 @@ class CalendarViewModel: ObservableObject {
             }
         }
     }
-    
+
+    func addEvent(title: String, startDate: Date, endDate: Date) {
+        eventManager.createEvent(title: title, startDate: startDate, endDate: endDate) { [weak self] success in
+            if success {
+                self?.loadEvents()
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] newEvents in
+                        self?.events = newEvents
+                    }
+                    .store(in: &self!.cancellables)
+            }
+        }
+    }
+
     private func loadEvents() -> AnyPublisher<[Date: [String]], Never> {
         return Future { promise in
             let calendars = self.eventStore.calendars(for: .event)
@@ -65,10 +111,19 @@ class CalendarViewModel: ObservableObject {
 
 struct ContentView: View {
     @StateObject private var viewModel = CalendarViewModel()
+    @State private var showAddEventSheet = false
 
     var body: some View {
-        CalendarView(events: viewModel.events)
-            .edgesIgnoringSafeArea(.all)
+        VStack {
+            CalendarView(events: viewModel.events)
+                .edgesIgnoringSafeArea(.all)
+            Button("Add Event") {
+                showAddEventSheet = true
+            }
+            .sheet(isPresented: $showAddEventSheet) {
+                AddEventView(viewModel: viewModel)
+            }
+        }
     }
 }
 
@@ -114,6 +169,38 @@ class Coordinator: NSObject, FSCalendarDelegate, FSCalendarDataSource {
         func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
             // 日付が選択されたときの処理
             print("Selected date: \(date)")
+        }
+    }
+}
+
+struct AddEventView: View {
+    @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: CalendarViewModel
+    @State private var title = ""
+    @State private var startDate = Date()
+    @State private var endDate = Date().addingTimeInterval(3600)
+
+    var body: some View {
+        NavigationView {
+            Form {
+                TextField("Event Title", text: $title)
+                DatePicker("Start Date", selection: $startDate)
+                DatePicker("End Date", selection: $endDate)
+            }
+            .navigationTitle("Add Event")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        viewModel.addEvent(title: title, startDate: startDate, endDate: endDate)
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 }
