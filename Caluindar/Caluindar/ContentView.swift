@@ -8,49 +8,56 @@
 import SwiftUI
 import FSCalendar
 import EventKit
+import Combine
 
-@MainActor
 class CalendarViewModel: ObservableObject {
     @Published var events: [Date: [String]] = [:]
     private let eventStore = EKEventStore()
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
-        Task {
-            await requestAccessToCalendar()
-            await loadEvents()
-        }
+        requestAccessToCalendar()
+            .flatMap { [unowned self] granted -> AnyPublisher<[Date: [String]], Never> in
+                if granted {
+                    return self.loadEvents()
+                } else {
+                    return Just([:]).eraseToAnyPublisher()
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$events)
     }
 
-    func requestAccessToCalendar() async {
-        do {
-            let granted = try await eventStore.requestAccess(to: .event)
-            if !granted {
-                print("Access to calendar not granted")
+    private func requestAccessToCalendar() -> Future<Bool, Never> {
+        return Future { promise in
+            self.eventStore.requestAccess(to: .event) { granted, _ in
+                promise(.success(granted))
             }
-        } catch {
-            print("Failed to request access: \(error)")
         }
     }
+    
+    private func loadEvents() -> AnyPublisher<[Date: [String]], Never> {
+        return Future { promise in
+            let calendars = self.eventStore.calendars(for: .event)
+            let oneMonthAgo = Date().addingTimeInterval(-30*24*3600)
+            let oneMonthAfter = Date().addingTimeInterval(30*24*3600)
+            let predicate = self.eventStore.predicateForEvents(withStart: oneMonthAgo, end: oneMonthAfter, calendars: calendars)
 
-    func loadEvents() async {
-        let calendars = eventStore.calendars(for: .event)
-        let oneMonthAgo = Date().addingTimeInterval(-30*24*3600)
-        let oneMonthAfter = Date().addingTimeInterval(30*24*3600)
-        let predicate = eventStore.predicateForEvents(withStart: oneMonthAgo, end: oneMonthAfter, calendars: calendars)
+            let ekEvents = self.eventStore.events(matching: predicate)
+            var newEvents: [Date: [String]] = [:]
 
-        let ekEvents = eventStore.events(matching: predicate)
-        var newEvents: [Date: [String]] = [:]
-
-        for event in ekEvents {
-            let startDate = Calendar.current.startOfDay(for: event.startDate)
-            if newEvents[startDate] != nil {
-                newEvents[startDate]?.append(event.title)
-            } else {
-                newEvents[startDate] = [event.title]
+            for event in ekEvents {
+                let startDate = Calendar.current.startOfDay(for: event.startDate)
+                if newEvents[startDate] != nil {
+                    newEvents[startDate]?.append(event.title)
+                } else {
+                    newEvents[startDate] = [event.title]
+                }
             }
-        }
 
-        self.events = newEvents
+            promise(.success(newEvents))
+        }
+        .eraseToAnyPublisher()
     }
 }
 
