@@ -9,6 +9,7 @@ import SwiftUI
 import FSCalendar
 import EventKit
 import Combine
+import CalculateCalendarLogic
 
 class EventManager {
     private let store = EKEventStore()

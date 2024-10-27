@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		991953842CCDE0110009BF98 /* CalculateCalendarLogic in Frameworks */ = {isa = PBXBuildFile; productRef = 991953832CCDE0110009BF98 /* CalculateCalendarLogic */; };
 		996DCC8F2CC6B80000DE8802 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 996DCC8E2CC6B80000DE8802 /* FSCalendar */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				991953842CCDE0110009BF98 /* CalculateCalendarLogic in Frameworks */,
 				996DCC8F2CC6B80000DE8802 /* FSCalendar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +133,7 @@
 			name = Caluindar;
 			packageProductDependencies = (
 				996DCC8E2CC6B80000DE8802 /* FSCalendar */,
+				991953832CCDE0110009BF98 /* CalculateCalendarLogic */,
 			);
 			productName = Caluindar;
 			productReference = 996DCC602CC4ECBE00DE8802 /* Caluindar.app */;
@@ -216,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				996DCC8D2CC6B80000DE8802 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				991953822CCDE0110009BF98 /* XCRemoteSwiftPackageReference "handMadeCalendarAdvance" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 996DCC612CC4ECBE00DE8802 /* Products */;
@@ -586,6 +590,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		991953822CCDE0110009BF98 /* XCRemoteSwiftPackageReference "handMadeCalendarAdvance" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fumiyasac/handMadeCalendarAdvance";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.1;
+			};
+		};
 		996DCC8D2CC6B80000DE8802 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
@@ -597,6 +609,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		991953832CCDE0110009BF98 /* CalculateCalendarLogic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 991953822CCDE0110009BF98 /* XCRemoteSwiftPackageReference "handMadeCalendarAdvance" */;
+			productName = CalculateCalendarLogic;
+		};
 		996DCC8E2CC6B80000DE8802 /* FSCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 996DCC8D2CC6B80000DE8802 /* XCRemoteSwiftPackageReference "FSCalendar" */;
