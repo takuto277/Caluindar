@@ -32,25 +32,3 @@ struct CalendarView: View {
         .background(Color(UIColor.systemBackground))
     }
 }
-    
-
-
-//struct ContentView: View {
-//    @StateObject private var viewModel = CalendarViewModel()
-//    @State private var showAddEventSheet = false
-//
-//    var body: some View {
-//        VStack {
-//            CalendarView(events: viewModel.events)
-//                .edgesIgnoringSafeArea(.all)
-//            Button("Add Event") {
-//                showAddEventSheet = true
-//            }
-//            .sheet(isPresented: $showAddEventSheet) {
-//                AddEventView(viewModel: viewModel)
-//            }
-//        }
-//        .padding(.top)
-//        .background(Color(UIColor.systemBackground))
-//    }
-//}

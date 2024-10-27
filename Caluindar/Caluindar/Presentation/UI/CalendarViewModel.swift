@@ -27,8 +27,6 @@ class CalendarViewModel: ObservableObject {
             }
         }
     }
-
-
     
     func loadEvents(for date: Date) async {
         let calendar = Calendar.current
