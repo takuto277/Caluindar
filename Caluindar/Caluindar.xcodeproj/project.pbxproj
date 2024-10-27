@@ -38,7 +38,7 @@
 		996DCC912CC6C26F00DE8802 /* Exceptions for "Caluindar" folder in "Caluindar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 996DCC5F2CC4ECBE00DE8802 /* Caluindar */;
 		};
@@ -421,11 +421,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Caluindar/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Caluindar/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = 52LU863YVH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Caluindar/Info.plist;
+				INFOPLIST_FILE = Caluindar/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,11 +452,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Caluindar/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Caluindar/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = 52LU863YVH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Caluindar/Info.plist;
+				INFOPLIST_FILE = Caluindar/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
