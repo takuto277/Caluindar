@@ -24,7 +24,7 @@ class CustomCalendarCell: FSCalendarCell {
         let labelHeight: CGFloat = 15
         for (index, label) in eventLabels.enumerated() {
             label.frame = CGRect(x: 0, y: contentView.bounds.height - CGFloat(index + 1) * labelHeight, width: contentView.bounds.width, height: labelHeight)
-            label.textColor = UIColor.label
+            label.textColor = UIColor(named: "Basic")
         }
     }
 
@@ -37,7 +37,7 @@ class CustomCalendarCell: FSCalendarCell {
         events?.forEach { event in
             let label = UILabel()
             label.font = UIFont.systemFont(ofSize: 10)
-            label.textColor = UIColor.label
+            label.textColor = UIColor(named: "Basic")
             label.numberOfLines = 1
             label.lineBreakMode = .byTruncatingTail
             label.text = event

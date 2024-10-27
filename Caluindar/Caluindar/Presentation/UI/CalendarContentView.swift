@@ -13,22 +13,44 @@ import CalculateCalendarLogic
 struct CalendarContentView: UIViewRepresentable {
     var events: [Date: [String]]
     var viewModel: CalendarViewModel
+    @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> FSCalendar {
         let calendar = FSCalendar()
         calendar.delegate = context.coordinator
         calendar.dataSource = context.coordinator
+        updateAppearance(for: calendar)
         calendar.register(CustomCalendarCell.self, forCellReuseIdentifier: "cell")
         return calendar
     }
 
     func updateUIView(_ uiView: FSCalendar, context: Context) {
         context.coordinator.events = events
+        updateAppearance(for: uiView)
         uiView.reloadData()
     }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+    
+    private func updateAppearance(for calendar: FSCalendar) {
+        let appearance = calendar.appearance
+        if colorScheme == .dark {
+            appearance.titleDefaultColor = .white
+            appearance.weekdayTextColor = .lightGray
+            appearance.headerTitleColor = .white
+            appearance.todayColor = .darkGray
+            appearance.selectionColor = .lightGray
+            calendar.backgroundColor = .black
+        } else {
+            appearance.titleDefaultColor = .black
+            appearance.weekdayTextColor = .darkGray
+            appearance.headerTitleColor = .black
+            appearance.todayColor = .blue
+            appearance.selectionColor = .gray
+            calendar.backgroundColor = .white
+        }
     }
 
     class Coordinator: NSObject, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
