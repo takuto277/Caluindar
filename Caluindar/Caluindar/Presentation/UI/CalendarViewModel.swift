@@ -9,13 +9,26 @@ import Foundation
 import Combine
 import EventKit
 
+extension CalendarViewModel {
+    struct Input {
+        let pushSelectButton: AnyPublisher<Void, Never>
+    }
+    
+    class Output: ObservableObject {
+        var changeScreenForDetails = false
+    }
+}
+
 class CalendarViewModel: ObservableObject {
     @Published var events: [Date: [String]] = [:]
     private let useCase: EventUseCase
     private var cancellables = Set<AnyCancellable>()
+    private var changeScreenForDetails: Bool = false
+    private var output = Output()
 
     init(useCase: EventUseCase) {
         self.useCase = useCase
+
         Task {
             do {
                 let granted = try await useCase.requestAccess()
@@ -26,6 +39,16 @@ class CalendarViewModel: ObservableObject {
                 print("Failed to request access: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func transform(input: Input) -> Output {
+        input.pushSelectButton
+            .sink { [weak self] in
+                guard let self else { return }
+                output.changeScreenForDetails = true
+            }
+            .store(in: &cancellables)
+        return output
     }
     
     func loadEvents(for date: Date) async {

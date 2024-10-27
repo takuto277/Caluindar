@@ -7,28 +7,33 @@
 
 import SwiftUI
 import FSCalendar
+import Combine
 
 struct CalendarView: View {
-    @StateObject private var viewModel: CalendarViewModel
-    @State private var showAddEventSheet = false
+    private var viewModel: CalendarViewModel
+    private var showAddEventSheet = false
+    private var pushSelectButton = PassthroughSubject<Void, Never>()
+    @ObservedObject private var output: CalendarViewModel.Output
     
     init() {
         let repository = EventRepository()
         let useCase = EventUseCase(repository: repository)
-        _viewModel = StateObject(wrappedValue: CalendarViewModel(useCase: useCase))
+        let input = CalendarViewModel.Input(pushSelectButton: pushSelectButton.eraseToAnyPublisher())
+        viewModel = CalendarViewModel(useCase: useCase)
+        output = viewModel.transform(input: input)
     }
     
     var body: some View {
-        VStack {
-            CalendarContentView(events: viewModel.events, viewModel: viewModel)
-            Button("Add Event") {
-                showAddEventSheet = true
+        NavigationView {
+            VStack {
+                CalendarContentView(events: viewModel.events, viewModel: viewModel)
+                Button("Add Event") {
+                    // TODO:遷移させたい
+                }
             }
-            .sheet(isPresented: $showAddEventSheet) {
-                AddEventView(viewModel: viewModel)
-            }
+            .padding()
+            .background(Color(UIColor.systemBackground))
         }
-        .padding()
-        .background(Color(UIColor.systemBackground))
     }
 }
+
