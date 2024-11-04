@@ -10,20 +10,39 @@ import Combine
 import EventKit
 
 class CalendarDaysViewModel: ObservableObject {
+    struct Input {
+        let didCreateEvent: AnyPublisher<Void, Never>
+    }
     class Output: ObservableObject {
         @Published var events: [EventData] = []
     }
     
     private let useCase: EventUseCase
     private var cancellables = Set<AnyCancellable>()
+    var date: Date
     let output = Output()
 
     init(useCase: EventUseCase, date: Date) {
         self.useCase = useCase
-        loadEvents(for: date)
+        self.date = date
+        Task {
+            await loadEvents(for: date)
+        }
     }
     
-    private func loadEvents(for date: Date) {
+    func transform(input: Input)  -> Output {
+        input.didCreateEvent
+            .sink { [weak self] in
+                guard let self else { return }
+                Task {
+                    await self.loadEvents(for: self.date)
+                }
+            }
+            .store(in: &cancellables)
+        return output
+    }
+    
+    private func loadEvents(for date: Date) async {
         Task {
             let startOfDay = Calendar.current.startOfDay(for: date)
             let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!

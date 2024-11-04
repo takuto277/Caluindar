@@ -7,27 +7,47 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 struct AddEventView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var viewModel: CalendarViewModel
-    @State private var title = ""
-    @State private var startDate = Date()
-    @State private var endDate = Date().addingTimeInterval(3600)
+    @StateObject private var viewModel: AddEventViewModel
+    @ObservedObject private var output: AddEventViewModel.Output
+    var onEventCreated: (() -> Void)?
+    
+    init(date: Date = Date(), onEventCreated: (() -> Void)?) {
+        let title = CurrentValueSubject<String, Never>("")
+        let selectedDate = CurrentValueSubject<Date, Never>(date)
+        let selectedStartDate = CurrentValueSubject<Date, Never>(date)
+        let selectedEndDate = CurrentValueSubject<Date, Never>(date.addingTimeInterval(3600))
+
+        let input = AddEventViewModel.Input(
+            title: title.eraseToAnyPublisher(),
+            selectedDate: selectedDate.eraseToAnyPublisher(),
+            selectedStartDate: selectedStartDate.eraseToAnyPublisher(),
+            selectedEndDate: selectedEndDate.eraseToAnyPublisher()
+        )
+        let viewModel = AddEventViewModel(useCase: EventUseCase(repository: EventRepository()))
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.onEventCreated = onEventCreated
+        output = viewModel.transform(input: input)
+    }
 
     var body: some View {
         NavigationView {
             Form {
-                TextField("Event Title", text: $title)
+                TextField("Event Title", text: $output.title)
                     .foregroundColor(Color.primary)
-                DatePicker("Start Date", selection: $startDate)
-                DatePicker("End Date", selection: $endDate)
+                DatePicker("Start Date", selection: $output.date)
+                DatePicker("End Date", selection: $output.endDate)
             }
             .navigationTitle("Add Event")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        viewModel.addEvent(title: title, startDate: startDate, endDate: endDate)
+                        viewModel.addEvent(title: output.title, startDate: output.date, endDate: output.endDate) {
+                            onEventCreated?()
+                        }
                         dismiss()
                     }
                 }

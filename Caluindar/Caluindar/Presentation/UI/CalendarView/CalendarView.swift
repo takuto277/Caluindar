@@ -11,10 +11,11 @@ import Combine
 
 struct CalendarView: View {
     @StateObject private var viewModel: CalendarViewModel
-    private var showAddEventSheet = false
+    @State private var showAddEventSheet = false
     private var pushSelectButton = PassthroughSubject<Void, Never>()
     private var touchScreen = PassthroughSubject<TouchScreen, Never>()
     private var selectedDateSubject = PassthroughSubject<Date, Never>()
+    private var didCreateEvent = PassthroughSubject<Void, Never>()
     @ObservedObject private var output: CalendarViewModel.Output
     
     init() {
@@ -23,7 +24,8 @@ struct CalendarView: View {
         let input = CalendarViewModel.Input(
             pushSelectButton: pushSelectButton.eraseToAnyPublisher(),
             touchScreen: touchScreen.eraseToAnyPublisher(),
-            selectedDate: selectedDateSubject.eraseToAnyPublisher()
+            selectedDate: selectedDateSubject.eraseToAnyPublisher(),
+            didCreateEvent: didCreateEvent.eraseToAnyPublisher()
         )
         let viewModel = CalendarViewModel(useCase: useCase)
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -32,23 +34,50 @@ struct CalendarView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                CalendarContentView(events: viewModel.events, viewModel: viewModel, selectedDateSubject: selectedDateSubject)
-                Button("Add Event") {
-                    // TODO:遷移させたい
+            ZStack {
+                VStack {
+                    CalendarContentView(events: viewModel.events, viewModel: viewModel, selectedDateSubject: selectedDateSubject)
+                    Button("Add Event") {
+                        // TODO:遷移させたい
+                    }
+                    if let selectedDate = output.selectedDate {
+                        NavigationLink(
+                            destination: CalendarDaysView(date: selectedDate),
+                            isActive: $output.changeScreenForDetails
+                        ) {
+                            EmptyView()
+                        }
+                    }
+                    
                 }
-                if let selectedDate = output.selectedDate {
-                    NavigationLink(
-                        destination: CalendarDaysView(date: selectedDate),
-                        isActive: $output.changeScreenForDetails
-                    ) {
-                        EmptyView()
+                .padding()
+                .background(Color(UIColor.systemBackground))
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.showAddEventSheet = true
+                        }) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .padding()
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 2)
+                        }
+                        .padding()
                     }
                 }
-
             }
-            .padding()
-            .background(Color(UIColor.systemBackground))
+        }
+        .sheet(isPresented: self.$showAddEventSheet) {
+            AddEventView {
+                didCreateEvent.send()
+            }
         }
     }
 }

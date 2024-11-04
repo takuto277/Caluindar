@@ -20,6 +20,7 @@ extension CalendarViewModel {
         let pushSelectButton: AnyPublisher<Void, Never>
         let touchScreen: AnyPublisher<TouchScreen, Never>
         let selectedDate: AnyPublisher<Date, Never>
+        let didCreateEvent: AnyPublisher<Void, Never>
     }
     
     class Output: ObservableObject {
@@ -70,6 +71,14 @@ class CalendarViewModel: ObservableObject {
                 self.output.changeScreenForDetails = true
             }
             .store(in: &cancellables)
+        input.didCreateEvent
+            .sink { [weak self] in
+                guard let self else { return }
+                Task {
+                    await self.loadEvents(for: Date())
+                }
+            }
+            .store(in: &cancellables)
         return output
     }
     
@@ -83,17 +92,6 @@ class CalendarViewModel: ObservableObject {
         let ekEvents = await useCase.fetchEvents(from: startDate, to: endDate)
         DispatchQueue.main.async {
             self.events = self.groupEventsByDate(ekEvents)
-        }
-    }
-    
-    func addEvent(title: String, startDate: Date, endDate: Date) {
-        Task {
-            do {
-                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate)
-                await self.loadEvents(for: Date())
-            } catch {
-                
-            }
         }
     }
 
