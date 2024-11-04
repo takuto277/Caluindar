@@ -9,10 +9,12 @@ import SwiftUI
 import FSCalendar
 import UIKit
 import CalculateCalendarLogic
+import Combine
 
 struct CalendarContentView: UIViewRepresentable {
     var events: [Date: [String]]
     var viewModel: CalendarViewModel
+    var selectedDateSubject: PassthroughSubject<Date, Never>
     @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> FSCalendar {
@@ -76,6 +78,7 @@ struct CalendarContentView: UIViewRepresentable {
         func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
             // 日付が選択されたときの処理
             print("Selected date: \(date)")
+            parent.selectedDateSubject.send(date)
         }
         
         func calendarCurrentPageDidChange(_ calendar: FSCalendar) {

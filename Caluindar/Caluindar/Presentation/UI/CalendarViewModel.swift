@@ -9,13 +9,23 @@ import Foundation
 import Combine
 import EventKit
 
+
+enum TouchScreen {
+    case days
+    case none
+}
+
 extension CalendarViewModel {
     struct Input {
         let pushSelectButton: AnyPublisher<Void, Never>
+        let touchScreen: AnyPublisher<TouchScreen, Never>
+        let selectedDate: AnyPublisher<Date, Never>
     }
     
     class Output: ObservableObject {
-        var changeScreenForDetails = false
+        @Published var changeScreenForDetails = false
+        @Published var selectedDate: Date? = nil
+        @Published var touchScreen = TouchScreen.none
     }
 }
 
@@ -46,6 +56,18 @@ class CalendarViewModel: ObservableObject {
             .sink { [weak self] in
                 guard let self else { return }
                 output.changeScreenForDetails = true
+            }
+            .store(in: &cancellables)
+        input.touchScreen
+            .sink { [weak self] type in
+                guard let self else { return }
+            }
+            .store(in: &cancellables)
+        input.selectedDate
+            .sink { [weak self] date in
+                guard let self else { return }
+                self.output.selectedDate = date
+                self.output.changeScreenForDetails = true
             }
             .store(in: &cancellables)
         return output
