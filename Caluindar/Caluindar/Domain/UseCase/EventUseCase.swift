@@ -26,4 +26,8 @@ class EventUseCase {
     func createEvent(title: String, startDate: Date, endDate: Date) async throws {
         try await repository.createEvent(title: title, startDate: startDate, endDate: endDate)
     }
+    
+    func convertEventsData(events: [EKEvent]) async -> [EventData] {
+        await repository.convertEventsData(events: events)
+    }
 }

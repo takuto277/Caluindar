@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import UIKit
 
 class EventRepository {
     private let store = EKEventStore()
@@ -27,5 +28,18 @@ class EventRepository {
         event.endDate = endDate
         event.calendar = store.defaultCalendarForNewEvents
         try store.save(event, span: .thisEvent, commit: true)
+    }
+    
+    func convertEventsData(events: [EKEvent]) async -> [EventData] {
+        return events.map { event in
+            EventData(
+                title: event.title ?? "No Title",
+                startDate: event.startDate,
+                endDate: event.endDate,
+                location: event.location,
+                isAllDay: event.isAllDay,
+                color: UIColor(cgColor: event.calendar.cgColor)
+            )
+        }
     }
 }
