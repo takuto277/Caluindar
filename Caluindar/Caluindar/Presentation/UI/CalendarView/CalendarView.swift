@@ -37,9 +37,6 @@ struct CalendarView: View {
             ZStack {
                 VStack {
                     CalendarContentView(events: viewModel.events, viewModel: viewModel, selectedDateSubject: selectedDateSubject)
-                    Button("Add Event") {
-                        // TODO:遷移させたい
-                    }
                     if let selectedDate = output.selectedDate {
                         NavigationLink(
                             destination: CalendarDaysView(date: selectedDate),
@@ -48,10 +45,17 @@ struct CalendarView: View {
                             EmptyView()
                         }
                     }
-                    
                 }
                 .padding()
                 .background(Color(UIColor.systemBackground))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingView()) {
+                        Text("Settings")
+                    }
+                }
+            }
+            .navigationTitle("Calendar")
                 
                 VStack {
                     Spacer()
