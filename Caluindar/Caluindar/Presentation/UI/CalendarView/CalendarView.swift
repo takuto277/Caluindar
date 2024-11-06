@@ -48,14 +48,6 @@ struct CalendarView: View {
                 }
                 .padding()
                 .background(Color(UIColor.systemBackground))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingView()) {
-                        Text("Settings")
-                    }
-                }
-            }
-            .navigationTitle("Calendar")
                 
                 VStack {
                     Spacer()
@@ -77,6 +69,10 @@ struct CalendarView: View {
                     }
                 }
             }
+            .navigationBarItems(trailing: NavigationLink(destination: SettingView()) {
+                Image(systemName: "gearshape")
+                    .imageScale(.large)
+            })
         }
         .sheet(isPresented: self.$showAddEventSheet) {
             AddEventView {

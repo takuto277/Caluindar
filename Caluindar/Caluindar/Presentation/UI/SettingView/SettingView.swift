@@ -21,16 +21,15 @@ struct SettingView: View {
     }
     
     var body: some View {
-        NavigationView {
-            List {
-                Section(header: Text("Settings")) {
-                    Button("Calendar Access Settings") {
-                        didPushButton.send(.calendarAccess)
-                    }
+        List {
+            Section(header: Text("Settings")) {
+                Button("カレンダーアクセス設定") {
+                    didPushButton.send(.calendarAccess)
                 }
             }
-            .navigationTitle("Settings")
         }
+        .navigationTitle("設定")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
