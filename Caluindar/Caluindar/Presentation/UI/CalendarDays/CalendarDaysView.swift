@@ -40,7 +40,9 @@ struct CalendarDaysView: View {
                                     .font(.subheadline)
                                     .padding(.bottom, 5)
                                 ForEach(allDayEvents, id: \.title) { event in
-                                    EventCell(event: event)
+                                    NavigationLink(destination: EventDetailView(eventData: event)) {
+                                        EventCell(event: event)
+                                    }
                                 }
                             }
                             .padding(.bottom, 10)
@@ -48,7 +50,9 @@ struct CalendarDaysView: View {
                         
                         // 時間ごとのイベントを表示
                         ForEach(output.events.filter { !$0.isAllDay }, id: \.title) { event in
-                            EventCell(event: event)
+                            NavigationLink(destination: EventDetailView(eventData: event)) {
+                                EventCell(event: event)
+                            }
                         }
                     }
                     .padding()
@@ -87,7 +91,7 @@ struct CalendarDaysView: View {
 // イベントを表示するためのカスタムセル
 struct EventCell: View {
     let event: EventData
-
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -102,9 +106,6 @@ struct EventCell: View {
         .padding()
         .background(event.color != nil ? Color(event.color!) : Color.blue.opacity(0.3))
         .cornerRadius(8)
-        .onTapGesture {
-            print("Tapped on event: \(event.title)")
-        }
     }
 }
 
