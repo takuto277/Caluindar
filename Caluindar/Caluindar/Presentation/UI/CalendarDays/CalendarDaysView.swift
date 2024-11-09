@@ -13,10 +13,14 @@ struct CalendarDaysView: View {
     @State private var showAddEventSheet = false
     @ObservedObject private var output: CalendarDaysViewModel.Output
     private var didCreateEvent = PassthroughSubject<Void, Never>()
+    private var onAppear = PassthroughSubject<Void, Never>()
     
     init(date: Date) {
         let useCase = EventUseCase(repository: EventRepository())
-        let input = CalendarDaysViewModel.Input(didCreateEvent: didCreateEvent.eraseToAnyPublisher())
+        let input = CalendarDaysViewModel.Input(
+            didCreateEvent: didCreateEvent.eraseToAnyPublisher(),
+            onAppear: onAppear.eraseToAnyPublisher()
+        )
         let viewModel = CalendarDaysViewModel(useCase: useCase, date: date)
         
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -29,61 +33,71 @@ struct CalendarDaysView: View {
                 Text("Details for \(viewModel.date, formatter: dateFormatter)")
                     .font(.headline)
                     .padding()
-                
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        // 全日イベントを表示
-                        let allDayEvents = viewModel.allDayEvents()
-                        if !allDayEvents.isEmpty {
-                            VStack(alignment: .leading) {
-                                Text("All Day")
-                                    .font(.subheadline)
-                                    .padding(.bottom, 5)
-                                ForEach(allDayEvents, id: \.title) { event in
-                                    NavigationLink(destination: EventDetailView(eventData: event)) {
-                                        EventCell(event: event)
-                                    }
-                                }
-                            }
-                            .padding(.bottom, 10)
-                        }
-                        
-                        // 時間ごとのイベントを表示
-                        ForEach(output.events.filter { !$0.isAllDay }, id: \.title) { event in
-                            NavigationLink(destination: EventDetailView(eventData: event)) {
-                                EventCell(event: event)
-                            }
-                        }
-                    }
-                    .padding()
-                }
+                eventCell
             }
             .navigationTitle("Event Details")
             
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        self.showAddEventSheet = true
-                    }) {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 2)
-                    }
-                    .padding()
-                }
-            }
+            addButton
+        }
+        .onAppear {
+            onAppear.send()
         }
         .sheet(isPresented: self.$showAddEventSheet) {
             AddEventView(date: viewModel.date, onEventCreated: {
                 didCreateEvent.send()
             })
+        }
+    }
+    
+    private var eventCell: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                // 全日イベントを表示
+                let allDayEvents = viewModel.allDayEvents()
+                if !allDayEvents.isEmpty {
+                    VStack(alignment: .leading) {
+                        Text("All Day")
+                            .font(.subheadline)
+                            .padding(.bottom, 5)
+                        ForEach(allDayEvents, id: \.title) { event in
+                            NavigationLink(destination: EventDetailView(eventData: event)) {
+                                EventCell(event: event)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 10)
+                }
+                
+                // 時間ごとのイベントを表示
+                ForEach(output.events.filter { !$0.isAllDay }, id: \.title) { event in
+                    NavigationLink(destination: EventDetailView(eventData: event)) {
+                        EventCell(event: event)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+    
+    private var addButton: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.showAddEventSheet = true
+                }) {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .clipShape(Circle())
+                        .shadow(radius: 2)
+                }
+                .padding()
+            }
         }
     }
 }

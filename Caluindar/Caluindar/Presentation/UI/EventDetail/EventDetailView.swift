@@ -11,10 +11,14 @@ import Combine
 struct EventDetailView: View {
     @StateObject private var viewModel: EventDetailViewModel
     @ObservedObject private var output: EventDetailViewModel.Output
+    private let tappedButton = PassthroughSubject<EventDetailButtonType, Never>()
+    @Environment(\.dismiss) private var dismiss
     
     init(eventData: EventData) {
         let viewModel = EventDetailViewModel(eventDeta: eventData)
-        let input = EventDetailViewModel.Input()
+        let input = EventDetailViewModel.Input(
+            tappedButton: tappedButton.eraseToAnyPublisher()
+            )
         self._viewModel = StateObject(wrappedValue: viewModel)
         output = viewModel.transform(input: input)
     }
@@ -33,19 +37,23 @@ struct EventDetailView: View {
         }
         .padding()
         .navigationBarItems(trailing: HStack {
-            Button(action: {
-                // 三点リーダーのアクション
-            }) {
-                Image(systemName: "ellipsis")
-                    .imageScale(.large)
-            }
-            Button(action: {
-                // 鉛筆マークのアクション
-            }) {
-                Image(systemName: "pencil")
-                    .imageScale(.large)
-            }
+            navigationBarView
         })
+        .alert(isPresented: $output.showAlert) {
+            Alert(
+                title: Text("確認"),
+                message: Text("このイベントを削除しますか？"),
+                primaryButton: .destructive(Text("削除")) {
+                    tappedButton.send(.deleteAlert)
+                },
+                secondaryButton: .cancel(Text("キャンセル"))
+            )
+        }
+        .onReceive(output.$dismiss) { shouldDismiss in
+            if shouldDismiss {
+                dismiss()
+            }
+        }
     }
     
     private var descriptionTexts: some View {
@@ -59,6 +67,24 @@ struct EventDetailView: View {
             .font(.subheadline)
         }
         .padding(.leading, 8)
+    }
+    
+    private var navigationBarView: some View {
+        HStack {
+            Button(action: {
+                tappedButton.send(.edit)
+            }) {
+                Image(systemName: "pencil")
+                    .imageScale(.large)
+            }
+            Button(action: {
+                tappedButton.send(.trash)
+            }) {
+                Image(systemName: "trash")
+                    .imageScale(.large)
+                    .foregroundColor(.red)
+            }
+        }
     }
 }
 
