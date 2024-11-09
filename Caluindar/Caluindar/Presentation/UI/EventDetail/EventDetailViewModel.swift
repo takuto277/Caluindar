@@ -60,7 +60,7 @@ final class EventDetailViewModel: ObservableObject {
                         self.output.showAlert = true
                     }
                     case .deleteAlert:
-                        try await self.useCase.deleteEvent(eventDate: self.output.eventData)
+                        try await self.useCase.deleteEvent(eventData: self.output.eventData)
                         Task { @MainActor in
                             self.output.dismiss = true
                         }
