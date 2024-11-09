@@ -27,6 +27,10 @@ class EventUseCase {
         try await repository.createEvent(title: title, startDate: startDate, endDate: endDate)
     }
     
+    func updateEvent(newEventData: EventData) async throws {
+        try await repository.updateEvent(newEventData: newEventData)
+    }
+    
     func deleteEvent(eventData: EventData) async throws {
         try await repository.deleteEvent(eventData: eventData)
     }

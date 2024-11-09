@@ -30,6 +30,15 @@ class EventRepository {
         try store.save(event, span: .thisEvent, commit: true)
     }
     
+    func updateEvent(newEventData: EventData) async throws {
+        if let event = store.event(withIdentifier: newEventData.eventIdentifier) {
+            event.title = newEventData.title
+            event.startDate = newEventData.startDate
+            event.endDate = newEventData.endDate
+            try store.save(event, span: .thisEvent, commit: true)
+        }
+    }
+    
     func deleteEvent(eventData: EventData) async throws {
         if let event = store.event(withIdentifier: eventData.eventIdentifier) {
             try store.remove(event, span: .thisEvent, commit: true)
