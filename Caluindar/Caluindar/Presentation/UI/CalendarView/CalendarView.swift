@@ -50,9 +50,9 @@ struct CalendarView: View {
             })
         }
         .sheet(isPresented: self.$showEventFormSheet) {
-            EventFormView {
+            EventFormView(date: Date(), formType: .create, onEventCreated: {_ in 
                 didCreateEvent.send()
-            }
+            })
         }
     }
     

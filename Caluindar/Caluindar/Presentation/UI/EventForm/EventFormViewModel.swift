@@ -18,7 +18,7 @@ final class EventFormViewModel: ObservableObject {
         let title: AnyPublisher<String, Never>
         let selectedStartDate: AnyPublisher<Date, Never>
         let selectedEndDate: AnyPublisher<Date, Never>
-        let editSetup: AnyPublisher<Void, Never>
+        let editSetup: AnyPublisher<EventFormType, Never>
         let pushedSaveButton: AnyPublisher<Void, Never>
         var currentEventData: EventData?
     }
@@ -59,8 +59,9 @@ final class EventFormViewModel: ObservableObject {
             .assign(to: \.endDate, on: output)
             .store(in: &cancellables)
         input.editSetup
-            .sink { [weak self] in
+            .sink { [weak self] type in
                 guard let self else { return }
+                self.output.formType = type
                 self.output.title = self.output.eventData.title
                 self.output.startDate = self.output.eventData.startDate
                 self.output.endDate = self.output.eventData.endDate
@@ -72,14 +73,16 @@ final class EventFormViewModel: ObservableObject {
                 switch output.formType {
                 case .create:
                     self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate) {
-                        self.output.dismiss = true
+                        Task { @MainActor in
+                            self.output.dismiss = true
+                        }
                     }
                 case .edit:
                     self.output.eventData.title = self.output.title
                     self.output.eventData.startDate = self.output.startDate
                     self.output.eventData.endDate = self.output.endDate
                     
-                    Task {
+                    Task { @MainActor in
                         try await self.updateEvent(newEventData: self.output.eventData) {
                             self.output.dismiss = true
                         }

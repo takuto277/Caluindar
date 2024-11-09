@@ -13,15 +13,15 @@ struct EventFormView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: EventFormViewModel
     @ObservedObject private var output: EventFormViewModel.Output
-    var onEventCreated: (() -> Void)?
-    let editSetup = PassthroughSubject<Void, Never>()
+    var onEventCreated: ((EventData?) -> Void)?
+    let editSetup = PassthroughSubject<EventFormType, Never>()
     let pushSaveButton = PassthroughSubject<Void, Never>()
     
     init(
         date: Date = Date(),
         formType: EventFormType,
         currentEventData: EventData? = nil,
-        onEventCreated: (() -> Void)?
+        onEventCreated: ((EventData? ) -> Void)?
     ) {
         let title = CurrentValueSubject<String, Never>("")
         let selectedStartDate = CurrentValueSubject<Date, Never>(date)
@@ -40,7 +40,7 @@ struct EventFormView: View {
         self.onEventCreated = onEventCreated
         output = viewModel.transform(input: input)
         if formType == .edit {
-            editSetup.send()
+            editSetup.send(formType)
         }
     }
 
@@ -67,7 +67,7 @@ struct EventFormView: View {
             }
             .onReceive(output.$dismiss) { shouldDismiss in
                 if shouldDismiss {
-                    onEventCreated?()
+                    onEventCreated?(output.eventData)
                     dismiss()
                 }
             }

@@ -43,7 +43,7 @@ struct CalendarDaysView: View {
             onAppear.send()
         }
         .sheet(isPresented: self.$showEventFormSheet) {
-            EventFormView(date: viewModel.date, onEventCreated: {
+            EventFormView(date: viewModel.date, formType: .create, onEventCreated: {_ in 
                 didCreateEvent.send()
             })
         }
