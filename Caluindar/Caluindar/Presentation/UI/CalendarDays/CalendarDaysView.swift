@@ -10,7 +10,7 @@ import Combine
 
 struct CalendarDaysView: View {
     @StateObject private var viewModel: CalendarDaysViewModel
-    @State private var showAddEventSheet = false
+    @State private var showEventFormSheet = false
     @ObservedObject private var output: CalendarDaysViewModel.Output
     private var didCreateEvent = PassthroughSubject<Void, Never>()
     private var onAppear = PassthroughSubject<Void, Never>()
@@ -42,8 +42,8 @@ struct CalendarDaysView: View {
         .onAppear {
             onAppear.send()
         }
-        .sheet(isPresented: self.$showAddEventSheet) {
-            AddEventView(date: viewModel.date, onEventCreated: {
+        .sheet(isPresented: self.$showEventFormSheet) {
+            EventFormView(date: viewModel.date, onEventCreated: {
                 didCreateEvent.send()
             })
         }
@@ -85,7 +85,7 @@ struct CalendarDaysView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    self.showAddEventSheet = true
+                    self.showEventFormSheet = true
                 }) {
                     Image(systemName: "plus")
                         .resizable()

@@ -1,5 +1,5 @@
 //
-//  AddEventViewModel.swift
+//  EventFormViewModel.swift
 //  Caluindar
 //
 //  Created by 小野拓人 on 2024/11/05.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class AddEventViewModel: ObservableObject {
+final class EventFormViewModel: ObservableObject {
     struct Input {
         let title: AnyPublisher<String, Never>
         let selectedDate: AnyPublisher<Date, Never>

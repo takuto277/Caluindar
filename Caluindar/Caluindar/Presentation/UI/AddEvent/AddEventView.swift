@@ -1,5 +1,5 @@
 //
-//  AddEventView.swift
+//  EventFormView.swift
 //  Caluindar
 //
 //  Created by 小野拓人 on 2024/10/27.
@@ -9,10 +9,10 @@ import UIKit
 import SwiftUI
 import Combine
 
-struct AddEventView: View {
+struct EventFormView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var viewModel: AddEventViewModel
-    @ObservedObject private var output: AddEventViewModel.Output
+    @StateObject private var viewModel: EventFormViewModel
+    @ObservedObject private var output: EventFormViewModel.Output
     var onEventCreated: (() -> Void)?
     
     init(date: Date = Date(), onEventCreated: (() -> Void)?) {
@@ -21,13 +21,13 @@ struct AddEventView: View {
         let selectedStartDate = CurrentValueSubject<Date, Never>(date)
         let selectedEndDate = CurrentValueSubject<Date, Never>(date.addingTimeInterval(3600))
 
-        let input = AddEventViewModel.Input(
+        let input = EventFormViewModel.Input(
             title: title.eraseToAnyPublisher(),
             selectedDate: selectedDate.eraseToAnyPublisher(),
             selectedStartDate: selectedStartDate.eraseToAnyPublisher(),
             selectedEndDate: selectedEndDate.eraseToAnyPublisher()
         )
-        let viewModel = AddEventViewModel(useCase: EventUseCase(repository: EventRepository()))
+        let viewModel = EventFormViewModel(useCase: EventUseCase(repository: EventRepository()))
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onEventCreated = onEventCreated
         output = viewModel.transform(input: input)

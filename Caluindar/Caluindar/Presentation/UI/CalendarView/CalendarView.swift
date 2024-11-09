@@ -11,7 +11,7 @@ import Combine
 
 struct CalendarView: View {
     @StateObject private var viewModel: CalendarViewModel
-    @State private var showAddEventSheet = false
+    @State private var showEventFormSheet = false
     private var pushSelectButton = PassthroughSubject<Void, Never>()
     private var selectedDateSubject = PassthroughSubject<Date, Never>()
     private var currentPageSubject = PassthroughSubject<Date, Never>()
@@ -49,8 +49,8 @@ struct CalendarView: View {
                     .imageScale(.large)
             })
         }
-        .sheet(isPresented: self.$showAddEventSheet) {
-            AddEventView {
+        .sheet(isPresented: self.$showEventFormSheet) {
+            EventFormView {
                 didCreateEvent.send()
             }
         }
@@ -83,7 +83,7 @@ struct CalendarView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    self.showAddEventSheet = true
+                    self.showEventFormSheet = true
                 }) {
                     Image(systemName: "plus")
                         .resizable()
