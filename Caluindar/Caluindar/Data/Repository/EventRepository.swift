@@ -33,6 +33,8 @@ class EventRepository {
     func convertEventsData(events: [EKEvent]) async -> [EventData] {
         return events.map { event in
             EventData(
+                id: UUID(),
+                eventIdentifier: event.eventIdentifier,
                 title: event.title ?? "No Title",
                 startDate: event.startDate,
                 endDate: event.endDate,

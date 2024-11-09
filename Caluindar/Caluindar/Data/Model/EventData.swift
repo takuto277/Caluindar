@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-struct EventData {
+struct EventData: Identifiable {
+    let id: UUID
+    let eventIdentifier: String
     let title: String
     let startDate: Date
     let endDate: Date
