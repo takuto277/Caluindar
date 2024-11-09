@@ -17,6 +17,7 @@ enum EventDetailButtonType {
 extension EventDetailViewModel {
     struct Input {
         let tappedButton: AnyPublisher<EventDetailButtonType, Never>
+        let updateEventData: AnyPublisher<EventData, Never>
     }
     
     class Output: ObservableObject {
@@ -31,6 +32,7 @@ extension EventDetailViewModel {
             color: nil)
         @Published var showAlert = false
         @Published var dismiss = false
+        @Published var showEventForm = false
     }
 }
 
@@ -54,7 +56,9 @@ final class EventDetailViewModel: ObservableObject {
                 Task {
                     switch buttonType {
                     case .edit:
-                        break
+                        Task { @MainActor in
+                            self.output.showEventForm = true
+                        }
                     case .trash:
                     Task { @MainActor in
                         self.output.showAlert = true
@@ -68,7 +72,12 @@ final class EventDetailViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        
+        input.updateEventData
+            .sink { [weak self] newEventData in
+                guard let self else { return }
+                self.output.eventData = newEventData
+            }
+            .store(in: &cancellables)
         return output
     }
 }

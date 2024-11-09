@@ -12,12 +12,14 @@ struct EventDetailView: View {
     @StateObject private var viewModel: EventDetailViewModel
     @ObservedObject private var output: EventDetailViewModel.Output
     private let tappedButton = PassthroughSubject<EventDetailButtonType, Never>()
+    private let updateEventData = PassthroughSubject<EventData, Never>()
     @Environment(\.dismiss) private var dismiss
     
     init(eventData: EventData) {
         let viewModel = EventDetailViewModel(eventDeta: eventData)
         let input = EventDetailViewModel.Input(
-            tappedButton: tappedButton.eraseToAnyPublisher()
+            tappedButton: tappedButton.eraseToAnyPublisher(),
+            updateEventData: updateEventData.eraseToAnyPublisher()
             )
         self._viewModel = StateObject(wrappedValue: viewModel)
         output = viewModel.transform(input: input)
@@ -53,6 +55,12 @@ struct EventDetailView: View {
             if shouldDismiss {
                 dismiss()
             }
+        }
+        .sheet(isPresented: self.$output.showEventForm) {
+            EventFormView(date: Date(), formType: .edit, currentEventData: self.output.eventData, onEventCreated: { eventData in
+                guard let eventData = eventData else { return }
+                updateEventData.send(eventData)
+            })
         }
     }
     
