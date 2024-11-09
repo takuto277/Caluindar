@@ -12,6 +12,7 @@ import EventKit
 class CalendarDaysViewModel: ObservableObject {
     struct Input {
         let didCreateEvent: AnyPublisher<Void, Never>
+        let onAppear: AnyPublisher<Void, Never>
     }
     class Output: ObservableObject {
         @Published var events: [EventData] = []
@@ -32,6 +33,14 @@ class CalendarDaysViewModel: ObservableObject {
     
     func transform(input: Input)  -> Output {
         input.didCreateEvent
+            .sink { [weak self] in
+                guard let self else { return }
+                Task {
+                    await self.loadEvents(for: self.date)
+                }
+            }
+            .store(in: &cancellables)
+        input.onAppear
             .sink { [weak self] in
                 guard let self else { return }
                 Task {
