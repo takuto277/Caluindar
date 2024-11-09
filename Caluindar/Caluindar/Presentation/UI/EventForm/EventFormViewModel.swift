@@ -13,6 +13,7 @@ enum EventFormType {
     case edit
 }
 
+@MainActor
 final class EventFormViewModel: ObservableObject {
     struct Input {
         let title: AnyPublisher<String, Never>
@@ -73,16 +74,14 @@ final class EventFormViewModel: ObservableObject {
                 switch output.formType {
                 case .create:
                     self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate) {
-                        Task { @MainActor in
-                            self.output.dismiss = true
-                        }
+                        self.output.dismiss = true
                     }
                 case .edit:
                     self.output.eventData.title = self.output.title
                     self.output.eventData.startDate = self.output.startDate
                     self.output.eventData.endDate = self.output.endDate
                     
-                    Task { @MainActor in
+                    Task {
                         try await self.updateEvent(newEventData: self.output.eventData) {
                             self.output.dismiss = true
                         }
