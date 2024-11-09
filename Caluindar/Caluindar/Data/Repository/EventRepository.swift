@@ -30,6 +30,14 @@ class EventRepository {
         try store.save(event, span: .thisEvent, commit: true)
     }
     
+    func deleteEvent(eventData: EventData) async throws {
+        if let event = store.event(withIdentifier: eventData.eventIdentifier) {
+            try store.remove(event, span: .thisEvent, commit: true)
+        } else {
+            throw NSError(domain: "Event not found", code: 404, userInfo: nil)
+        }
+    }
+    
     func convertEventsData(events: [EKEvent]) async -> [EventData] {
         return events.map { event in
             EventData(
