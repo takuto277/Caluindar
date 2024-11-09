@@ -7,31 +7,61 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FE87FD3D-9675-4EEB-AF74-D195EA1EC1F1"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "04A33D04-1E91-415F-B066-049F0891E4C0"
+            uuid = "691582F7-93BD-4739-BE05-81929893E792"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "transform(input:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "691582F7-93BD-4739-BE05-81929893E792 - f7374f6478de7796"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in closure #5 () -&gt; () in Caluindar.CalendarViewModel.transform(input: Caluindar.CalendarViewModel.Input) -&gt; Caluindar.CalendarViewModel.Output"
+                  moduleName = "Caluindar.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/onotakuto/%E9%96%8B%E7%99%BA/Repository/Caluindar/Caluindar/Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "83"
+                  endingLineNumber = "83">
+               </Location>
+               <Location
+                  uuid = "691582F7-93BD-4739-BE05-81929893E792 - de806eef71b1b3d7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for closure #1 () async -&gt; () in closure #5 () -&gt; () in Caluindar.CalendarViewModel.transform(input: Caluindar.CalendarViewModel.Input) -&gt; Caluindar.CalendarViewModel.Output"
+                  moduleName = "Caluindar.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/onotakuto/%E9%96%8B%E7%99%BA/Repository/Caluindar/Caluindar/Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "83"
+                  endingLineNumber = "83">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EA495742-8EE8-485E-980E-AE0DBF3C58D0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "transform(input:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -39,15 +69,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "24B0262E-937D-44C6-817C-57F70C2F7A45"
+            uuid = "FA300C7E-E09A-4478-8566-C86C4D5FE50A"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysViewModel.swift"
+            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "loadEvents(for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -55,81 +85,93 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "75C1DD9B-C064-4D63-AAE9-70A86F27CBA0"
+            uuid = "318FC657-A830-4EF9-AE26-75090EB88D01"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysViewModel.swift"
+            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "loadEvents(for:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "318FC657-A830-4EF9-AE26-75090EB88D01 - e2ffca28b267e441"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Caluindar.CalendarViewModel.loadEvents(for: Foundation.Date) async -&gt; ()"
+                  moduleName = "Caluindar.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/onotakuto/%E9%96%8B%E7%99%BA/Repository/Caluindar/Caluindar/Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97">
+               </Location>
+               <Location
+                  uuid = "318FC657-A830-4EF9-AE26-75090EB88D01 - a0dc9f4635b70b7c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for Caluindar.CalendarViewModel.loadEvents(for: Foundation.Date) async -&gt; ()"
+                  moduleName = "Caluindar.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/onotakuto/%E9%96%8B%E7%99%BA/Repository/Caluindar/Caluindar/Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97">
+               </Location>
+               <Location
+                  uuid = "318FC657-A830-4EF9-AE26-75090EB88D01 - 9953a3f2981f3843"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Caluindar.CalendarViewModel.loadEvents(for: Foundation.Date) async -&gt; ()"
+                  moduleName = "Caluindar.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/onotakuto/%E9%96%8B%E7%99%BA/Repository/Caluindar/Caluindar/Caluindar/Presentation/UI/CalendarView/CalendarViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "020DAF65-38E0-4B29-B48C-2AF0F803F325"
-            shouldBeEnabled = "Yes"
+            uuid = "DF6F254F-AD6A-4E89-91E2-CB0372B94D60"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysViewModel.swift"
+            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "transform(input:)"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "calendar(_:numberOfEventsFor:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EC215D59-65D3-47AA-B909-243D0662E077"
-            shouldBeEnabled = "Yes"
+            uuid = "0A7BB2E8-662D-45B8-AC45-D5838BBC8D02"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysView.swift"
+            filePath = "Caluindar/Presentation/UI/CalendarView/CalendarContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "EAAEA424-D9B4-4062-84F3-FC88D7CB9503"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "678AF65F-AB35-4903-AE5C-2662F935A594"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Caluindar/Presentation/UI/CalendarDays/CalendarDaysView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "70"
+            endingLineNumber = "70"
+            landmarkName = "calendar(_:cellFor:at:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

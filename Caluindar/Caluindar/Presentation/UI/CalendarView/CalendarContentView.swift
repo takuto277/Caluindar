@@ -12,9 +12,10 @@ import CalculateCalendarLogic
 import Combine
 
 struct CalendarContentView: UIViewRepresentable {
-    var events: [Date: [String]]
+    @Binding var events: [Date: [String]]
     var viewModel: CalendarViewModel
     var selectedDateSubject: PassthroughSubject<Date, Never>
+    var currentPageSubject: PassthroughSubject<Date, Never>
     @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> FSCalendar {
@@ -82,6 +83,7 @@ struct CalendarContentView: UIViewRepresentable {
         }
         
         func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+            parent.currentPageSubject.send(calendar.currentPage)
             Task {
                 await parent.viewModel.loadEvents(for: calendar.currentPage)
             }

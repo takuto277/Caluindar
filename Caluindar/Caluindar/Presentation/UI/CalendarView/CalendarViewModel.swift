@@ -9,24 +9,19 @@ import Foundation
 import Combine
 import EventKit
 
-
-enum TouchScreen {
-    case days
-    case none
-}
-
 extension CalendarViewModel {
     struct Input {
         let pushSelectButton: AnyPublisher<Void, Never>
-        let touchScreen: AnyPublisher<TouchScreen, Never>
         let selectedDate: AnyPublisher<Date, Never>
+        let currentPage: AnyPublisher<Date, Never>
         let didCreateEvent: AnyPublisher<Void, Never>
+        let onAppear: AnyPublisher<Void, Never>
     }
     
     class Output: ObservableObject {
         @Published var changeScreenForDetails = false
         @Published var selectedDate: Date? = nil
-        @Published var touchScreen = TouchScreen.none
+        @Published var currentPage: Date? = nil
     }
 }
 
@@ -59,11 +54,6 @@ class CalendarViewModel: ObservableObject {
                 output.changeScreenForDetails = true
             }
             .store(in: &cancellables)
-        input.touchScreen
-            .sink { [weak self] type in
-                guard let self else { return }
-            }
-            .store(in: &cancellables)
         input.selectedDate
             .sink { [weak self] date in
                 guard let self else { return }
@@ -71,11 +61,26 @@ class CalendarViewModel: ObservableObject {
                 self.output.changeScreenForDetails = true
             }
             .store(in: &cancellables)
+        input.currentPage
+            .sink { [weak self] date in
+                guard let self else { return }
+                self.output.currentPage = date
+            }
+            .store(in: &cancellables)
         input.didCreateEvent
             .sink { [weak self] in
                 guard let self else { return }
                 Task {
                     await self.loadEvents(for: Date())
+                }
+            }
+            .store(in: &cancellables)
+        input.onAppear
+            .sink { [weak self] in
+                guard let self,
+                      let date = output.currentPage else { return }
+                Task {
+                    await self.loadEvents(for: date)
                 }
             }
             .store(in: &cancellables)
