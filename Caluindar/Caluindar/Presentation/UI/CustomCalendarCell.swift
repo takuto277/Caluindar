@@ -28,22 +28,30 @@ class CustomCalendarCell: FSCalendarCell {
         }
     }
 
-    func configure(with events: [String]?) {
-        // 既存のラベルをクリア
-        eventLabels.forEach { $0.removeFromSuperview() }
-        eventLabels.removeAll()
+func configure(with events: [String]?) {
+    // 既存のラベルをクリア
+    eventLabels.forEach { $0.removeFromSuperview() }
+    eventLabels.removeAll()
 
-        // 新しいイベントラベルを追加
-        events?.forEach { event in
-            let label = UILabel()
-            label.font = UIFont.systemFont(ofSize: 10)
-            label.textColor = UIColor(named: "Basic")
-            label.numberOfLines = 1
-            label.lineBreakMode = .byTruncatingTail
+    // 新しいイベントラベルを追加
+    events?.enumerated().forEach { index, event in
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.textColor = UIColor(named: "Basic")
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
+        
+        if index < 3 {
             label.text = event
-            contentView.addSubview(label)
-            eventLabels.append(label)
+        } else if index == 3 {
+            label.text = "..."
+        } else {
+            return
         }
-        setNeedsLayout()
+        
+        contentView.addSubview(label)
+        eventLabels.append(label)
     }
+    setNeedsLayout()
+}
 }
