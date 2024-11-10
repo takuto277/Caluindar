@@ -91,11 +91,27 @@ struct CalendarContentView: UIViewRepresentable {
 
         // 土日祝のテキストカラーを変更
         func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
+            let currentMonth = calendar.currentPage
+            let calendarComponent = Calendar.current.dateComponents([.year, .month], from: currentMonth)
+            let dateComponent = Calendar.current.dateComponents([.year, .month], from: date)
+            
+            if calendarComponent != dateComponent {
+                return UIColor.lightGray
+            }
+            
             let weekday = Calendar.current.component(.weekday, from: date)
-            if weekday == 7 {
-                return UIColor.blue
-            } else if weekday == 1 || isHoliday(date: date) { // 日曜日または祝日
+            if weekday == 1 || isHoliday(date: date) {
                 return UIColor.red
+            } else if weekday == 7 {
+                return UIColor.blue
+            }
+            return appearance.titleDefaultColor
+        }
+        
+        // 表示月でない日付を薄く表示
+        func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleSelectionColorFor date: Date, at position: FSCalendarMonthPosition) -> UIColor? {
+            if position != .current {
+                return UIColor.lightGray
             }
             return nil
         }
