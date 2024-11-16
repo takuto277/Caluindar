@@ -8,46 +8,99 @@
 import Foundation
 import EventKit
 import UIKit
+import CoreData
 
 class EventRepository {
     private let store = EKEventStore()
+    private let coreData = CoreDataStack.shared
 
     func requestAccess() async throws -> Bool {
         return try await store.requestAccess(to: .event)
     }
 
-    func fetchEvents(from startDate: Date, to endDate: Date) async -> [EKEvent] {
-        let predicate = store.predicateForEvents(withStart: startDate, end: endDate, calendars: nil)
-        return store.events(matching: predicate)
+    func fetchEvents(from startDate: Date, to endDate: Date) async -> [EventData] {
+        if AccessManager.shared.hasFullAccess() {
+            let predicate = store.predicateForEvents(withStart: startDate, end: endDate, calendars: nil)
+            let events = store.events(matching: predicate)
+            return await convertEventsData(events: events)
+        } else {
+            return fetchEventsFromCoreData(from: startDate, to: endDate)
+        }
+    }
+
+    private func fetchEventsFromCoreData(from startDate: Date, to endDate: Date) -> [EventData] {
+        let fetchRequest = NSFetchRequest<EventEntityData>(entityName: "EventEntityData")
+        fetchRequest.predicate = NSPredicate(format: "startDate >= %@ AND endDate <= %@", startDate as NSDate, endDate as NSDate)
+        
+        do {
+            let eventEntities = try coreData.context.fetch(fetchRequest)
+            return eventEntities.map { EventData(entity: $0) }
+        } catch {
+            print("Failed to fetch events from CoreData: \(error)")
+            return []
+        }
     }
 
     func createEvent(title: String, startDate: Date, endDate: Date) async throws {
-        let event = EKEvent(eventStore: store)
-        event.title = title
-        event.startDate = startDate
-        event.endDate = endDate
-        event.calendar = store.defaultCalendarForNewEvents
-        try store.save(event, span: .thisEvent, commit: true)
+        if AccessManager.shared.hasFullAccess() {
+            let event = EKEvent(eventStore: store)
+            event.title = title
+            event.startDate = startDate
+            event.endDate = endDate
+            event.calendar = store.defaultCalendarForNewEvents
+            try store.save(event, span: .thisEvent, commit: true)
+        } else {
+            let entity = EventEntityData(context: coreData.context)
+            entity.eventIdentifier = UUID().uuidString
+            entity.title = title
+            entity.startDate = startDate
+            entity.endDate = endDate
+            entity.isAllDay = false
+            entity.color = UIColor.blue.toData() // デフォルトの色を設定
+            try coreData.context.save()
+        }
     }
     
     func updateEvent(newEventData: EventData) async throws {
-        if let event = store.event(withIdentifier: newEventData.eventIdentifier) {
-            event.title = newEventData.title
-            event.startDate = newEventData.startDate
-            event.endDate = newEventData.endDate
-            try store.save(event, span: .thisEvent, commit: true)
+        if AccessManager.shared.hasFullAccess() {
+            if let event = store.event(withIdentifier: newEventData.eventIdentifier) {
+                event.title = newEventData.title
+                event.startDate = newEventData.startDate
+                event.endDate = newEventData.endDate
+                try store.save(event, span: .thisEvent, commit: true)
+            }
+        } else {
+            let fetchRequest = NSFetchRequest<EventEntityData>(entityName: "EventEntityData")
+            fetchRequest.predicate = NSPredicate(format: "eventIdentifier == %@", newEventData.eventIdentifier)
+            
+            if let entity = try coreData.context.fetch(fetchRequest).first {
+                entity.title = newEventData.title
+                entity.startDate = newEventData.startDate
+                entity.endDate = newEventData.endDate
+                try coreData.context.save()
+            }
         }
     }
     
     func deleteEvent(eventData: EventData) async throws {
-        if let event = store.event(withIdentifier: eventData.eventIdentifier) {
-            try store.remove(event, span: .thisEvent, commit: true)
+        if AccessManager.shared.hasFullAccess() {
+            if let event = store.event(withIdentifier: eventData.eventIdentifier) {
+                try store.remove(event, span: .thisEvent, commit: true)
+            } else {
+                throw NSError(domain: "Event not found", code: 404, userInfo: nil)
+            }
         } else {
-            throw NSError(domain: "Event not found", code: 404, userInfo: nil)
+            let fetchRequest = NSFetchRequest<EventEntityData>(entityName: "EventEntityData")
+            fetchRequest.predicate = NSPredicate(format: "eventIdentifier == %@", eventData.eventIdentifier)
+            
+            if let entity = try coreData.context.fetch(fetchRequest).first {
+                coreData.context.delete(entity)
+                try coreData.context.save()
+            }
         }
     }
     
-    func convertEventsData(events: [EKEvent]) async -> [EventData] {
+    private func convertEventsData(events: [EKEvent]) async -> [EventData] {
         return events.map { event in
             EventData(
                 id: UUID(),
