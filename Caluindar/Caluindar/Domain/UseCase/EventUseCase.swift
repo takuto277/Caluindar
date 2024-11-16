@@ -19,7 +19,7 @@ class EventUseCase {
         return try await repository.requestAccess()
     }
 
-    func fetchEvents(from startDate: Date, to endDate: Date) async -> [EKEvent] {
+    func fetchEvents(from startDate: Date, to endDate: Date) async -> [EventData] {
         return await repository.fetchEvents(from: startDate, to: endDate)
     }
 
@@ -33,9 +33,5 @@ class EventUseCase {
     
     func deleteEvent(eventData: EventData) async throws {
         try await repository.deleteEvent(eventData: eventData)
-    }
-    
-    func convertEventsData(events: [EKEvent]) async -> [EventData] {
-        await repository.convertEventsData(events: events)
     }
 }
