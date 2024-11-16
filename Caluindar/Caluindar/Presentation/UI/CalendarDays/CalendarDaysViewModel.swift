@@ -56,8 +56,7 @@ class CalendarDaysViewModel: ObservableObject {
             let startOfDay = Calendar.current.startOfDay(for: date)
             let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
             
-            let ekEvents = await useCase.fetchEvents(from: startOfDay, to: endOfDay)
-            let eventData = await useCase.convertEventsData(events: ekEvents)
+            let eventData = await useCase.fetchEvents(from: startOfDay, to: endOfDay)
             
             Task { @MainActor in
                 self.output.events = eventData

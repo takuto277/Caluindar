@@ -12,7 +12,7 @@ import CalculateCalendarLogic
 import Combine
 
 struct CalendarContentView: UIViewRepresentable {
-    @Binding var events: [Date: [String]]
+    @Binding var events: [EventData]
     var viewModel: CalendarViewModel
     var selectedDateSubject: PassthroughSubject<Date, Never>
     var currentPageSubject: PassthroughSubject<Date, Never>
@@ -58,7 +58,7 @@ struct CalendarContentView: UIViewRepresentable {
 
     class Coordinator: NSObject, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
         var parent: CalendarContentView
-        var events: [Date: [String]] = [:]
+        var events: [EventData] = []
 
         init(_ parent: CalendarContentView) {
             self.parent = parent
@@ -66,7 +66,10 @@ struct CalendarContentView: UIViewRepresentable {
 
         func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
             let cell = calendar.dequeueReusableCell(withIdentifier: "cell", for: date, at: position) as! CustomCalendarCell
-            cell.configure(with: events[date])
+        let eventsForDate = events.filter { event in
+            Calendar.current.isDate(event.startDate, inSameDayAs: date)
+        }
+                cell.configure(with: eventsForDate)
             return cell
         }
 

@@ -59,7 +59,7 @@ struct CalendarView: View {
     private var calendar: some View {
         VStack {
             CalendarContentView(
-                events: $viewModel.events,
+                events: $output.events,
                 viewModel: viewModel,
                 selectedDateSubject: selectedDateSubject,
                 currentPageSubject: currentPageSubject

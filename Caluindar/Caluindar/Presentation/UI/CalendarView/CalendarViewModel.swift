@@ -19,6 +19,7 @@ extension CalendarViewModel {
     }
     
     class Output: ObservableObject {
+        @Published var events: [EventData] = []
         @Published var changeScreenForDetails = false
         @Published var selectedDate: Date? = nil
         @Published var currentPage: Date? = nil
@@ -26,7 +27,6 @@ extension CalendarViewModel {
 }
 
 class CalendarViewModel: ObservableObject {
-    @Published var events: [Date: [String]] = [:]
     private let useCase: EventUseCase
     private var cancellables = Set<AnyCancellable>()
     private var changeScreenForDetails: Bool = false
@@ -94,22 +94,9 @@ class CalendarViewModel: ObservableObject {
             return
         }
         
-        let ekEvents = await useCase.fetchEvents(from: startDate, to: endDate)
+        let eventData = await useCase.fetchEvents(from: startDate, to: endDate)
         DispatchQueue.main.async {
-            self.events = self.groupEventsByDate(ekEvents)
+            self.output.events = eventData
         }
-    }
-
-    private func groupEventsByDate(_ events: [EKEvent]) -> [Date: [String]] {
-        var groupedEvents: [Date: [String]] = [:]
-        for event in events {
-            let startDate = Calendar.current.startOfDay(for: event.startDate)
-            if groupedEvents[startDate] != nil {
-                groupedEvents[startDate]?.append(event.title)
-            } else {
-                groupedEvents[startDate] = [event.title]
-            }
-        }
-        return groupedEvents
     }
 }
