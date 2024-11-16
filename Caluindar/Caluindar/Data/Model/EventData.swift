@@ -17,4 +17,30 @@ struct EventData: Identifiable {
     var location: String?
     var isAllDay: Bool
     var color: UIColor?
+    
+    init(entity: EventEntityData) {
+        self.id = UUID() // CoreDataにUUIDがある場合はそれを使用
+        self.eventIdentifier = entity.eventIdentifier ?? ""
+        self.title = entity.title ?? "No Title"
+        self.startDate = entity.startDate ?? Date()
+        self.endDate = entity.endDate ?? Date()
+        self.location = entity.location ?? nil // CoreDataにlocationがない場合はnil
+        self.isAllDay = entity.isAllDay
+        if let colorData = entity.color {
+            self.color = UIColor.fromData(colorData)
+        } else {
+            self.color = nil
+        }
+    }
+    
+    init(id: UUID = UUID(), eventIdentifier: String, title: String, startDate: Date, endDate: Date, location: String?, isAllDay: Bool, color: UIColor?) {
+        self.id = id
+        self.eventIdentifier = eventIdentifier
+        self.title = title
+        self.startDate = startDate
+        self.endDate = endDate
+        self.location = location
+        self.isAllDay = isAllDay
+        self.color = color
+    }
 }
