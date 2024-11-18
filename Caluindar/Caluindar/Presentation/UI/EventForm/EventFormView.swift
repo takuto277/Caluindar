@@ -47,20 +47,20 @@ struct EventFormView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("Event Title", text: $output.title)
+                TextField("タイトル", text: $output.title)
                     .foregroundColor(Color.primary)
-                DatePicker("Start Date", selection: $output.startDate)
-                DatePicker("End Date", selection: $output.endDate)
+                DatePicker("開始日時", selection: $output.startDate)
+                DatePicker("終了日時", selection: $output.endDate)
             }
-            .navigationTitle("Add Event")
+            .navigationTitle(output.formType == .create ? "予定追加" : "予定編集")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button("保存") {
                         pushSaveButton.send()
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("キャンセル") {
                         dismiss()
                     }
                 }

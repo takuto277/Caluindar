@@ -30,12 +30,12 @@ struct CalendarDaysView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("Details for \(viewModel.date, formatter: dateFormatter)")
+                Text("\(viewModel.date, formatter: dateFormatter)の予定一覧")
                     .font(.headline)
                     .padding()
                 eventCell
             }
-            .navigationTitle("Event Details")
+            .navigationTitle("日別スケジュール")
             
             addButton
         }
