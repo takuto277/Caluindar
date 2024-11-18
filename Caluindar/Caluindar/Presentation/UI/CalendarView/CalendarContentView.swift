@@ -22,6 +22,8 @@ struct CalendarContentView: UIViewRepresentable {
         let calendar = FSCalendar()
         calendar.delegate = context.coordinator
         calendar.dataSource = context.coordinator
+        calendar.locale = Locale(identifier: "ja_JP")
+        calendar.appearance.headerDateFormat = "yyyy年 M月"
         updateAppearance(for: calendar)
         calendar.register(CustomCalendarCell.self, forCellReuseIdentifier: "cell")
         return calendar
