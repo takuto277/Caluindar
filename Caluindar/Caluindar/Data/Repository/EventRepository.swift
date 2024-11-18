@@ -30,7 +30,7 @@ class EventRepository {
 
     private func fetchEventsFromCoreData(from startDate: Date, to endDate: Date) -> [EventData] {
         let fetchRequest = NSFetchRequest<EventEntityData>(entityName: "EventEntityData")
-        fetchRequest.predicate = NSPredicate(format: "startDate >= %@ AND endDate <= %@", startDate as NSDate, endDate as NSDate)
+        fetchRequest.predicate = NSPredicate(format: "startDate < %@ AND endDate > %@", endDate as NSDate, startDate as NSDate)
         
         do {
             let eventEntities = try coreData.context.fetch(fetchRequest)

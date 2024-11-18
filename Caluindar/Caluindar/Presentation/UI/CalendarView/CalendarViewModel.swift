@@ -22,7 +22,7 @@ extension CalendarViewModel {
         @Published var events: [EventData] = []
         @Published var changeScreenForDetails = false
         @Published var selectedDate: Date? = nil
-        @Published var currentPage: Date? = nil
+        @Published var currentPage: Date = Date()
     }
 }
 
@@ -77,10 +77,9 @@ class CalendarViewModel: ObservableObject {
             .store(in: &cancellables)
         input.onAppear
             .sink { [weak self] in
-                guard let self,
-                      let date = output.currentPage else { return }
+                guard let self else { return }
                 Task {
-                    await self.loadEvents(for: date)
+                    await self.loadEvents(for: self.output.currentPage)
                 }
             }
             .store(in: &cancellables)
