@@ -80,8 +80,6 @@ struct CalendarContentView: UIViewRepresentable {
         }
 
         func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-            // 日付が選択されたときの処理
-            print("Selected date: \(date)")
             parent.selectedDateSubject.send(date)
         }
         

@@ -49,8 +49,10 @@ struct EventFormView: View {
             Form {
                 TextField("タイトル", text: $output.title)
                     .foregroundColor(Color.primary)
-                DatePicker("開始日時", selection: $output.startDate)
-                DatePicker("終了日時", selection: $output.endDate)
+                DatePicker("開始日時", selection: $output.startDate, displayedComponents: [.date, .hourAndMinute])
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                DatePicker("終了日時", selection: $output.endDate, displayedComponents: [.date, .hourAndMinute])
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             .navigationTitle(output.formType == .create ? "予定追加" : "予定編集")
             .toolbar {
