@@ -99,7 +99,9 @@ struct EventDetailView: View {
 // 日付フォーマッタ
 private let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .medium
+    formatter.locale = Locale(identifier: "ja_JP")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "yyyy年MM月dd日(EEE)"
     return formatter
 }()
 
@@ -107,5 +109,6 @@ private let dateFormatter: DateFormatter = {
 private let timeFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.timeStyle = .short
+    formatter.locale = Locale(identifier: "ja_JP")
     return formatter
 }()
