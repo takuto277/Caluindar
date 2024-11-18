@@ -7,6 +7,7 @@
 
 import UIKit
 import FSCalendar
+import SwiftUICore
 
 class CustomCalendarCell: FSCalendarCell {
     private var eventLabels: [UILabel] = []
@@ -31,7 +32,6 @@ class CustomCalendarCell: FSCalendarCell {
                 width: contentView.bounds.width - 2 * padding,
                 height: labelHeight - 2 * padding
             )
-            label.textColor = UIColor(named: "Basic")
         }
     }
     
@@ -44,8 +44,8 @@ class CustomCalendarCell: FSCalendarCell {
         let displayedEvents = events.prefix(3)
         for event in displayedEvents {
             let label = UILabel()
+            label.textColor = textColor(for: event.color)
             label.font = UIFont.systemFont(ofSize: 10)
-            label.textColor = UIColor(named: "Basic")
             label.numberOfLines = 1
             label.lineBreakMode = .byTruncatingTail
             label.text = event.title
@@ -68,5 +68,10 @@ class CustomCalendarCell: FSCalendarCell {
         }
         
         setNeedsLayout()
+    }
+    
+    private func textColor(for color: UIColor?) -> UIColor {
+        guard let color = color else { return .white }
+        return color.isLight ? .black : .white
     }
 }

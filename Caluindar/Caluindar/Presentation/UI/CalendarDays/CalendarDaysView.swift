@@ -111,8 +111,9 @@ struct EventCell: View {
             VStack(alignment: .leading) {
                 Text(event.title)
                     .font(.headline)
+                    .foregroundColor(textColor(for: event.color))
                 Text("\(event.startDate, formatter: timeFormatter) - \(event.endDate, formatter: timeFormatter)")
-                    .foregroundColor(.white)
+                    .foregroundColor(textColor(for: event.color))
                     .font(.subheadline)
             }
             Spacer()
@@ -120,6 +121,11 @@ struct EventCell: View {
         .padding()
         .background(event.color != nil ? Color(event.color!) : Color.blue.opacity(0.3))
         .cornerRadius(8)
+    }
+    
+    private func textColor(for color: UIColor?) -> Color {
+        guard let color = color else { return .white }
+        return color.isLight ? .black : .white
     }
 }
 

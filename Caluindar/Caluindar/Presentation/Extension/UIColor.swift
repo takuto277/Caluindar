@@ -22,4 +22,11 @@ extension UIColor {
         self.init(red: components[0], green: components[1], blue: components[2], alpha: components[3])
     }
     
+    var isLight: Bool {
+        guard let components = cgColor.components, components.count >= 3 else {
+            return false
+        }
+        let brightness = (components[0] * 299 + components[1] * 587 + components[2] * 114) / 1000
+        return brightness > 0.5
+    }
 }
