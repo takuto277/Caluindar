@@ -73,6 +73,17 @@ struct EventDetailView: View {
                 Text("\(output.eventData.startDate, formatter: timeFormatter) ~ \(output.eventData.endDate, formatter: timeFormatter)")
             }
             .font(.subheadline)
+            
+            Text(output.eventData.notes)
+                .font(.body)
+                .padding()
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                .padding(.top, 8)
         }
         .padding(.leading, 8)
     }

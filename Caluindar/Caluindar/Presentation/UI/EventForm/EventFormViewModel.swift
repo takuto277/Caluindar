@@ -34,12 +34,14 @@ final class EventFormViewModel: ObservableObject {
             endDate: Date(),
             location: "",
             isAllDay: false,
-            color: nil)
+            color: nil,
+            notes: "")
         @Published var formType: EventFormType = .create
         @Published var title: String = ""
         @Published var startDate: Date = Date()
         @Published var endDate: Date = Date()
         @Published var color: UIColor = UIColor.blue
+        @Published var notes: String = ""
         @Published var dismiss = false
     }
     
@@ -69,6 +71,7 @@ final class EventFormViewModel: ObservableObject {
                 self.output.startDate = self.output.eventData.startDate
                 self.output.endDate = self.output.eventData.endDate
                 self.output.color = self.output.eventData.color ?? .black
+                self.output.notes = self.output.eventData.notes
             }
             .store(in: &cancellables)
         input.pushedSaveButton
@@ -76,7 +79,7 @@ final class EventFormViewModel: ObservableObject {
                 guard let self else { return }
                 switch output.formType {
                 case .create:
-                    self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color) {
+                    self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color, notes: self.output.notes) {
                         self.output.dismiss = true
                     }
                 case .edit:
@@ -84,6 +87,7 @@ final class EventFormViewModel: ObservableObject {
                     self.output.eventData.startDate = self.output.startDate
                     self.output.eventData.endDate = self.output.endDate
                     self.output.eventData.color = self.output.color
+                    self.output.eventData.notes = self.output.notes
                     
                     Task {
                         try await self.updateEvent(newEventData: self.output.eventData) {
@@ -99,10 +103,10 @@ final class EventFormViewModel: ObservableObject {
         return output
     }
     
-    private func addEvent(title: String, startDate: Date, endDate: Date, color: UIColor, completion: @escaping () -> Void) {
+    private func addEvent(title: String, startDate: Date, endDate: Date, color: UIColor, notes: String, completion: @escaping () -> Void) {
         Task {
             do {
-                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate, color: color)
+                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate, color: color, notes: notes)
                 completion()
             } catch {
                 

@@ -17,6 +17,7 @@ struct EventData: Identifiable {
     var location: String?
     var isAllDay: Bool
     var color: UIColor?
+    var notes: String
     
     init(entity: EventEntityData) {
         self.id = UUID() // CoreDataにUUIDがある場合はそれを使用
@@ -31,9 +32,10 @@ struct EventData: Identifiable {
         } else {
             self.color = nil
         }
+        self.notes = entity.notes ?? ""
     }
     
-    init(id: UUID = UUID(), eventIdentifier: String, title: String, startDate: Date, endDate: Date, location: String?, isAllDay: Bool, color: UIColor?) {
+    init(id: UUID = UUID(), eventIdentifier: String, title: String, startDate: Date, endDate: Date, location: String?, isAllDay: Bool, color: UIColor?, notes: String) {
         self.id = id
         self.eventIdentifier = eventIdentifier
         self.title = title
@@ -42,5 +44,6 @@ struct EventData: Identifiable {
         self.location = location
         self.isAllDay = isAllDay
         self.color = color
+        self.notes = notes
     }
 }

@@ -29,7 +29,8 @@ extension EventDetailViewModel {
             endDate: Date(),
             location: "",
             isAllDay: false,
-            color: nil)
+            color: nil,
+            notes: "")
         @Published var showAlert = false
         @Published var dismiss = false
         @Published var showEventForm = false

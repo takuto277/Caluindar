@@ -41,7 +41,7 @@ class EventRepository {
         }
     }
 
-    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor) async throws {
+    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor, notes: String) async throws {
         if AccessManager.shared.hasFullAccess() {
             let event = EKEvent(eventStore: store)
             event.title = title
@@ -49,6 +49,7 @@ class EventRepository {
             event.endDate = endDate
             event.calendar = store.defaultCalendarForNewEvents
             event.calendar.cgColor = color.cgColor
+            event.notes = notes
             try store.save(event, span: .thisEvent, commit: true)
         } else {
             let entity = EventEntityData(context: coreData.context)
@@ -57,7 +58,8 @@ class EventRepository {
             entity.startDate = startDate
             entity.endDate = endDate
             entity.isAllDay = false
-            entity.color = color.toData() // デフォルトの色を設定
+            entity.color = color.toData()
+            entity.notes = notes
             try coreData.context.save()
         }
     }
@@ -69,6 +71,7 @@ class EventRepository {
                 event.startDate = newEventData.startDate
                 event.endDate = newEventData.endDate
                 event.calendar.cgColor = newEventData.color?.cgColor
+                event.notes = newEventData.notes
                 try store.save(event, span: .thisEvent, commit: true)
             }
         } else {
@@ -80,6 +83,7 @@ class EventRepository {
                 entity.startDate = newEventData.startDate
                 entity.endDate = newEventData.endDate
                 entity.color = newEventData.color?.toData()
+                entity.notes = newEventData.notes
                 try coreData.context.save()
             }
         }
@@ -113,7 +117,8 @@ class EventRepository {
                 endDate: event.endDate,
                 location: event.location,
                 isAllDay: event.isAllDay,
-                color: UIColor(cgColor: event.calendar.cgColor)
+                color: UIColor(cgColor: event.calendar.cgColor),
+                notes: event.notes ?? ""
             )
         }
     }

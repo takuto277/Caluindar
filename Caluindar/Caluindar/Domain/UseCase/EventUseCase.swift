@@ -24,8 +24,8 @@ class EventUseCase {
         return await repository.fetchEvents(from: startDate, to: endDate)
     }
 
-    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor) async throws {
-        try await repository.createEvent(title: title, startDate: startDate, endDate: endDate, color: color)
+    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor, notes: String) async throws {
+        try await repository.createEvent(title: title, startDate: startDate, endDate: endDate, color: color, notes: notes)
     }
     
     func updateEvent(newEventData: EventData) async throws {

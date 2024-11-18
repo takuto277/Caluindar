@@ -58,11 +58,16 @@ struct EventFormView: View {
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                 DatePicker("終了日時", selection: $output.endDate, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.locale, Locale(identifier: "ja_JP"))
-                ColorPicker("イベントカラー", selection: $selectedColor)
-                    .padding()
+                ColorPicker("予定カラー", selection: $selectedColor)
                     .onChange(of: selectedColor) {
                         output.color = UIColor(selectedColor)
                     }
+                VStack(alignment: .leading) {
+                    Text("メモ欄")
+                    TextEditor(text: $output.notes)
+                        .frame(height: 100)
+                        .border(Color.gray, width: 1)
+                }
             }
             .navigationTitle(output.formType == .create ? "予定追加" : "予定編集")
             .toolbar {

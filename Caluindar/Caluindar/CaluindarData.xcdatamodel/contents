@@ -6,6 +6,7 @@
         <attribute name="eventIdentifier" attributeType="String"/>
         <attribute name="isAllDay" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="location" optional="YES" attributeType="String"/>
+        <attribute name="notes" attributeType="String"/>
         <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
     </entity>
