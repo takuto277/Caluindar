@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUICore
 
 extension UIColor {
     func toData() -> Data? {
@@ -15,4 +16,10 @@ extension UIColor {
     static func fromData(_ data: Data) -> UIColor? {
         return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? UIColor
     }
+    
+    convenience init(_ color: Color) {
+        let components = color.cgColor?.components ?? [0, 0, 0, 1]
+        self.init(red: components[0], green: components[1], blue: components[2], alpha: components[3])
+    }
+    
 }

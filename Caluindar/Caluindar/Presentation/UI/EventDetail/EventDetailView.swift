@@ -29,7 +29,7 @@ struct EventDetailView: View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Rectangle()
-                    .fill(Color.blue)
+                    .fill(Color(output.eventData.color ?? .black))
                     .frame(width: 20, height: 20)
                 descriptionTexts
                 Spacer()

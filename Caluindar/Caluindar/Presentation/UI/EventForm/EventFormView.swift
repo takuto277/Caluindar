@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import Combine
+import SwiftUICore
 
 struct EventFormView: View {
     @Environment(\.dismiss) var dismiss
@@ -16,6 +17,8 @@ struct EventFormView: View {
     var onEventCreated: ((EventData?) -> Void)?
     let editSetup = PassthroughSubject<EventFormType, Never>()
     let pushSaveButton = PassthroughSubject<Void, Never>()
+    
+    @State private var selectedColor: Color = .blue
     
     init(
         date: Date = Date(),
@@ -42,6 +45,8 @@ struct EventFormView: View {
         if formType == .edit {
             editSetup.send(formType)
         }
+        
+        _selectedColor = State(initialValue: Color(output.color))
     }
 
     var body: some View {
@@ -53,6 +58,11 @@ struct EventFormView: View {
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                 DatePicker("終了日時", selection: $output.endDate, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.locale, Locale(identifier: "ja_JP"))
+                ColorPicker("イベントカラー", selection: $selectedColor)
+                    .padding()
+                    .onChange(of: selectedColor) {
+                        output.color = UIColor(selectedColor)
+                    }
             }
             .navigationTitle(output.formType == .create ? "予定追加" : "予定編集")
             .toolbar {

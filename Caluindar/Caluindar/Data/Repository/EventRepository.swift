@@ -41,13 +41,14 @@ class EventRepository {
         }
     }
 
-    func createEvent(title: String, startDate: Date, endDate: Date) async throws {
+    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor) async throws {
         if AccessManager.shared.hasFullAccess() {
             let event = EKEvent(eventStore: store)
             event.title = title
             event.startDate = startDate
             event.endDate = endDate
             event.calendar = store.defaultCalendarForNewEvents
+            event.calendar.cgColor = color.cgColor
             try store.save(event, span: .thisEvent, commit: true)
         } else {
             let entity = EventEntityData(context: coreData.context)
@@ -56,7 +57,7 @@ class EventRepository {
             entity.startDate = startDate
             entity.endDate = endDate
             entity.isAllDay = false
-            entity.color = UIColor.blue.toData() // デフォルトの色を設定
+            entity.color = color.toData() // デフォルトの色を設定
             try coreData.context.save()
         }
     }
@@ -67,6 +68,7 @@ class EventRepository {
                 event.title = newEventData.title
                 event.startDate = newEventData.startDate
                 event.endDate = newEventData.endDate
+                event.calendar.cgColor = newEventData.color?.cgColor
                 try store.save(event, span: .thisEvent, commit: true)
             }
         } else {
@@ -77,6 +79,7 @@ class EventRepository {
                 entity.title = newEventData.title
                 entity.startDate = newEventData.startDate
                 entity.endDate = newEventData.endDate
+                entity.color = newEventData.color?.toData()
                 try coreData.context.save()
             }
         }

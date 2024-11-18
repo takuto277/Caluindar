@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import UIKit
 
 class EventUseCase {
     private let repository: EventRepository
@@ -23,8 +24,8 @@ class EventUseCase {
         return await repository.fetchEvents(from: startDate, to: endDate)
     }
 
-    func createEvent(title: String, startDate: Date, endDate: Date) async throws {
-        try await repository.createEvent(title: title, startDate: startDate, endDate: endDate)
+    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor) async throws {
+        try await repository.createEvent(title: title, startDate: startDate, endDate: endDate, color: color)
     }
     
     func updateEvent(newEventData: EventData) async throws {

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 enum EventFormType {
     case create
@@ -38,6 +39,7 @@ final class EventFormViewModel: ObservableObject {
         @Published var title: String = ""
         @Published var startDate: Date = Date()
         @Published var endDate: Date = Date()
+        @Published var color: UIColor = UIColor.blue
         @Published var dismiss = false
     }
     
@@ -66,6 +68,7 @@ final class EventFormViewModel: ObservableObject {
                 self.output.title = self.output.eventData.title
                 self.output.startDate = self.output.eventData.startDate
                 self.output.endDate = self.output.eventData.endDate
+                self.output.color = self.output.eventData.color ?? .black
             }
             .store(in: &cancellables)
         input.pushedSaveButton
@@ -73,13 +76,14 @@ final class EventFormViewModel: ObservableObject {
                 guard let self else { return }
                 switch output.formType {
                 case .create:
-                    self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate) {
+                    self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color) {
                         self.output.dismiss = true
                     }
                 case .edit:
                     self.output.eventData.title = self.output.title
                     self.output.eventData.startDate = self.output.startDate
                     self.output.eventData.endDate = self.output.endDate
+                    self.output.eventData.color = self.output.color
                     
                     Task {
                         try await self.updateEvent(newEventData: self.output.eventData) {
@@ -95,10 +99,10 @@ final class EventFormViewModel: ObservableObject {
         return output
     }
     
-    private func addEvent(title: String, startDate: Date, endDate: Date, completion: @escaping () -> Void) {
+    private func addEvent(title: String, startDate: Date, endDate: Date, color: UIColor, completion: @escaping () -> Void) {
         Task {
             do {
-                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate)
+                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate, color: color)
                 completion()
             } catch {
                 
