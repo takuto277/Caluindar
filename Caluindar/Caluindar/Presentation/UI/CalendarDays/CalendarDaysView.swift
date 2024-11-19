@@ -58,7 +58,14 @@ struct CalendarDaysView: View {
                     VStack(alignment: .leading) {
                         Text("終日の予定")
                             .font(.subheadline)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.gray, lineWidth: 1)
+                            )
                             .padding(.bottom, 5)
+                            
                         ForEach(allDayEvents, id: \.title) { event in
                             NavigationLink(destination: EventDetailView(eventData: event)) {
                                 EventCell(event: event)
@@ -66,12 +73,25 @@ struct CalendarDaysView: View {
                         }
                     }
                     .padding(.bottom, 10)
+                    
+                    Divider()
+                         .padding(.vertical, 10)
                 }
-                
-                // 時間ごとのイベントを表示
-                ForEach(output.events.filter { !$0.isAllDay }, id: \.title) { event in
-                    NavigationLink(destination: EventDetailView(eventData: event)) {
-                        EventCell(event: event)
+                let timeSpecificEvents = output.events.filter { !$0.isAllDay }
+                if !timeSpecificEvents.isEmpty {
+                    Text("時間別の予定")
+                        .font(.subheadline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                        .padding(.bottom, 5)
+                    ForEach(timeSpecificEvents, id: \.title) { event in
+                        NavigationLink(destination: EventDetailView(eventData: event)) {
+                            EventCell(event: event)
+                        }
                     }
                 }
             }
