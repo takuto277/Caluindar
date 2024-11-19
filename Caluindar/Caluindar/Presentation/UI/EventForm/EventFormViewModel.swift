@@ -38,6 +38,7 @@ final class EventFormViewModel: ObservableObject {
             notes: "")
         @Published var formType: EventFormType = .create
         @Published var title: String = ""
+        @Published var isAllDay: Bool = false
         @Published var startDate: Date = Date()
         @Published var endDate: Date = Date()
         @Published var color: UIColor = UIColor.blue
@@ -68,6 +69,7 @@ final class EventFormViewModel: ObservableObject {
                 guard let self else { return }
                 self.output.formType = type
                 self.output.title = self.output.eventData.title
+                self.output.isAllDay = self.output.eventData.isAllDay
                 self.output.startDate = self.output.eventData.startDate
                 self.output.endDate = self.output.eventData.endDate
                 self.output.color = self.output.eventData.color ?? .black
@@ -79,11 +81,12 @@ final class EventFormViewModel: ObservableObject {
                 guard let self else { return }
                 switch output.formType {
                 case .create:
-                    self.addEvent(title: self.output.title, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color, notes: self.output.notes) {
+                    self.addEvent(title: self.output.title, isAllDay: self.output.isAllDay, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color, notes: self.output.notes) {
                         self.output.dismiss = true
                     }
                 case .edit:
                     self.output.eventData.title = self.output.title
+                    self.output.eventData.isAllDay = self.output.isAllDay
                     self.output.eventData.startDate = self.output.startDate
                     self.output.eventData.endDate = self.output.endDate
                     self.output.eventData.color = self.output.color
@@ -103,10 +106,10 @@ final class EventFormViewModel: ObservableObject {
         return output
     }
     
-    private func addEvent(title: String, startDate: Date, endDate: Date, color: UIColor, notes: String, completion: @escaping () -> Void) {
+    private func addEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, color: UIColor, notes: String, completion: @escaping () -> Void) {
         Task {
             do {
-                try await useCase.createEvent(title: title, startDate: startDate, endDate: endDate, color: color, notes: notes)
+                try await useCase.createEvent(title: title, isAllDay: isAllDay, startDate: startDate, endDate: endDate, color: color, notes: notes)
                 completion()
             } catch {
                 

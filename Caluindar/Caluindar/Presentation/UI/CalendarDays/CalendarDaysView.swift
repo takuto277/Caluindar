@@ -56,7 +56,7 @@ struct CalendarDaysView: View {
                 let allDayEvents = viewModel.allDayEvents()
                 if !allDayEvents.isEmpty {
                     VStack(alignment: .leading) {
-                        Text("All Day")
+                        Text("終日の予定")
                             .font(.subheadline)
                             .padding(.bottom, 5)
                         ForEach(allDayEvents, id: \.title) { event in

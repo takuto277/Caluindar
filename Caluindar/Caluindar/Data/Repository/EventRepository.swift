@@ -41,10 +41,11 @@ class EventRepository {
         }
     }
 
-    func createEvent(title: String, startDate: Date, endDate: Date, color: UIColor, notes: String) async throws {
+    func createEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, color: UIColor, notes: String) async throws {
         if AccessManager.shared.hasFullAccess() {
             let event = EKEvent(eventStore: store)
             event.title = title
+            event.isAllDay = isAllDay
             event.startDate = startDate
             event.endDate = endDate
             event.calendar = store.defaultCalendarForNewEvents
@@ -55,6 +56,7 @@ class EventRepository {
             let entity = EventEntityData(context: coreData.context)
             entity.eventIdentifier = UUID().uuidString
             entity.title = title
+            entity.isAllDay = isAllDay
             entity.startDate = startDate
             entity.endDate = endDate
             entity.isAllDay = false
@@ -68,6 +70,7 @@ class EventRepository {
         if AccessManager.shared.hasFullAccess() {
             if let event = store.event(withIdentifier: newEventData.eventIdentifier) {
                 event.title = newEventData.title
+                event.isAllDay = newEventData.isAllDay
                 event.startDate = newEventData.startDate
                 event.endDate = newEventData.endDate
                 event.calendar.cgColor = newEventData.color?.cgColor
@@ -80,6 +83,7 @@ class EventRepository {
             
             if let entity = try coreData.context.fetch(fetchRequest).first {
                 entity.title = newEventData.title
+                entity.isAllDay = newEventData.isAllDay
                 entity.startDate = newEventData.startDate
                 entity.endDate = newEventData.endDate
                 entity.color = newEventData.color?.toData()

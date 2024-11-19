@@ -54,9 +54,10 @@ struct EventFormView: View {
             Form {
                 TextField("タイトル", text: $output.title)
                     .foregroundColor(Color.primary)
-                DatePicker("開始日時", selection: $output.startDate, displayedComponents: [.date, .hourAndMinute])
+                Toggle("終日", isOn: $output.isAllDay)
+                DatePicker("開始日時", selection: $output.startDate, displayedComponents: output.isAllDay ? [.date] : [.date, .hourAndMinute])
                     .environment(\.locale, Locale(identifier: "ja_JP"))
-                DatePicker("終了日時", selection: $output.endDate, displayedComponents: [.date, .hourAndMinute])
+                DatePicker("終了日時", selection: $output.endDate, displayedComponents: output.isAllDay ? [.date] : [.date, .hourAndMinute])
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                 ColorPicker("予定カラー", selection: $selectedColor)
                     .onChange(of: selectedColor) {
