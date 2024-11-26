@@ -59,7 +59,6 @@ class EventRepository {
             entity.isAllDay = isAllDay
             entity.startDate = startDate
             entity.endDate = endDate
-            entity.isAllDay = false
             entity.color = color.toData()
             entity.notes = notes
             try coreData.context.save()
