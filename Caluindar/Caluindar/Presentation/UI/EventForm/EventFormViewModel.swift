@@ -79,31 +79,44 @@ final class EventFormViewModel: ObservableObject {
         input.pushedSaveButton
             .sink { [weak self] in
                 guard let self else { return }
-                switch output.formType {
-                case .create:
-                    self.addEvent(title: self.output.title, isAllDay: self.output.isAllDay, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color, notes: self.output.notes) {
-                        self.output.dismiss = true
-                    }
-                case .edit:
-                    self.output.eventData.title = self.output.title
-                    self.output.eventData.isAllDay = self.output.isAllDay
-                    self.output.eventData.startDate = self.output.startDate
-                    self.output.eventData.endDate = self.output.endDate
-                    self.output.eventData.color = self.output.color
-                    self.output.eventData.notes = self.output.notes
-                    
-                    Task {
-                        try await self.updateEvent(newEventData: self.output.eventData) {
-                            self.output.dismiss = true
-                        }
-                    }
-                }
+                self.pushedSaveButton()
             }
             .store(in: &cancellables)
         if let data = input.currentEventData {
             self.output.eventData = data
         }
         return output
+    }
+    
+    private func pushedSaveButton() {
+        if output.isAllDay {
+            if let startOfDay = Calendar.current.date(bySettingHour: 00, minute: 00, second: 00, of: output.startDate) {
+                output.startDate = startOfDay
+            }
+            // 23:59に設定
+            if let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: output.endDate) {
+                output.endDate = endOfDay
+            }
+        }
+        switch output.formType {
+        case .create:
+            self.addEvent(title: self.output.title, isAllDay: self.output.isAllDay, startDate: self.output.startDate, endDate: self.output.endDate, color: self.output.color, notes: self.output.notes) {
+                self.output.dismiss = true
+            }
+        case .edit:
+            self.output.eventData.title = self.output.title
+            self.output.eventData.isAllDay = self.output.isAllDay
+            self.output.eventData.startDate = self.output.startDate
+            self.output.eventData.endDate = self.output.endDate
+            self.output.eventData.color = self.output.color
+            self.output.eventData.notes = self.output.notes
+            
+            Task {
+                try await self.updateEvent(newEventData: self.output.eventData) {
+                    self.output.dismiss = true
+                }
+            }
+        }
     }
     
     private func addEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, color: UIColor, notes: String, completion: @escaping () -> Void) {
